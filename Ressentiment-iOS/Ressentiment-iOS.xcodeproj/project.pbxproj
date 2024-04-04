@@ -10,6 +10,9 @@
 		021F2E122B95A8A500D13367 /* Ressentiment_iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021F2E112B95A8A500D13367 /* Ressentiment_iOSApp.swift */; };
 		021F2E162B95A8A600D13367 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 021F2E152B95A8A600D13367 /* Assets.xcassets */; };
 		021F2E192B95A8A600D13367 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 021F2E182B95A8A600D13367 /* Preview Assets.xcassets */; };
+		022564982BBA9DA4006D4AD3 /* GlassBreak_01.gif in Resources */ = {isa = PBXBuildFile; fileRef = 022564972BBA9DA3006D4AD3 /* GlassBreak_01.gif */; };
+		0225649A2BBAA682006D4AD3 /* GIFViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022564992BBAA682006D4AD3 /* GIFViewController.swift */; };
+		0225649C2BBBBFF6006D4AD3 /* GlassBreak_03.gif in Resources */ = {isa = PBXBuildFile; fileRef = 0225649B2BBBBFF6006D4AD3 /* GlassBreak_03.gif */; };
 		022DD7842B9DEE92006F53A6 /*  NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022DD7832B9DEE92006F53A6 /*  NetworkError.swift */; };
 		022DD7862B9DEEC0006F53A6 /* RessentimentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022DD7852B9DEEC0006F53A6 /* RessentimentService.swift */; };
 		022DD7882B9DF09C006F53A6 /* ColorResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022DD7872B9DF09C006F53A6 /* ColorResponse.swift */; };
@@ -25,7 +28,6 @@
 		027A2DFA2B997860008E662B /* testvideo.gif in Resources */ = {isa = PBXBuildFile; fileRef = 027A2DF92B997860008E662B /* testvideo.gif */; };
 		028750BD2BB291A000D003E9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 028750BC2BB291A000D003E9 /* GoogleService-Info.plist */; };
 		028750CA2BB2995B00D003E9 /* XYZResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028750C92BB2995B00D003E9 /* XYZResponse.swift */; };
-		028750CC2BB29A0D00D003E9 /* XYZStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028750CB2BB29A0D00D003E9 /* XYZStore.swift */; };
 		02D2DBB22BB6A9E2005069B5 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 02D2DBB12BB6A9E2005069B5 /* FirebaseAnalytics */; };
 		02D2DBB42BB6A9E2005069B5 /* FirebaseAnalyticsOnDeviceConversion in Frameworks */ = {isa = PBXBuildFile; productRef = 02D2DBB32BB6A9E2005069B5 /* FirebaseAnalyticsOnDeviceConversion */; };
 		02D2DBB62BB6A9E2005069B5 /* FirebaseAnalyticsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 02D2DBB52BB6A9E2005069B5 /* FirebaseAnalyticsSwift */; };
@@ -48,6 +50,9 @@
 		021F2E112B95A8A500D13367 /* Ressentiment_iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ressentiment_iOSApp.swift; sourceTree = "<group>"; };
 		021F2E152B95A8A600D13367 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		021F2E182B95A8A600D13367 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		022564972BBA9DA3006D4AD3 /* GlassBreak_01.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = GlassBreak_01.gif; sourceTree = "<group>"; };
+		022564992BBAA682006D4AD3 /* GIFViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GIFViewController.swift; path = ../../../../../Downloads/GIFViewController.swift; sourceTree = "<group>"; };
+		0225649B2BBBBFF6006D4AD3 /* GlassBreak_03.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = GlassBreak_03.gif; sourceTree = "<group>"; };
 		022DD7812B9DEE13006F53A6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		022DD7832B9DEE92006F53A6 /*  NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = " NetworkError.swift"; sourceTree = "<group>"; };
 		022DD7852B9DEEC0006F53A6 /* RessentimentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RessentimentService.swift; sourceTree = "<group>"; };
@@ -62,7 +67,6 @@
 		027A2DF92B997860008E662B /* testvideo.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = testvideo.gif; sourceTree = "<group>"; };
 		028750BC2BB291A000D003E9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		028750C92BB2995B00D003E9 /* XYZResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XYZResponse.swift; sourceTree = "<group>"; };
-		028750CB2BB29A0D00D003E9 /* XYZStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XYZStore.swift; sourceTree = "<group>"; };
 		02E870132B95B4F900DD4B38 /* Concrete-Smooth.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = "Concrete-Smooth.usdz"; sourceTree = "<group>"; };
 		02E870142B95B4F900DD4B38 /* GlassHead.scn */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = GlassHead.scn; sourceTree = "<group>"; };
 		02E870172B95B50500DD4B38 /* color_3.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = color_3.jpeg; sourceTree = "<group>"; };
@@ -121,10 +125,10 @@
 				021F2E1F2B95A8BE00D13367 /* Texture */,
 				021F2E112B95A8A500D13367 /* Ressentiment_iOSApp.swift */,
 				02EF173E2BA972C1002871CE /* UIKitContentView.swift */,
-				028750CB2BB29A0D00D003E9 /* XYZStore.swift */,
 				02EF17612BAABA53002871CE /* GlassHeadManager.swift */,
 				023019022BA7F13300B6996F /* UIImage+.swift */,
 				027A2DF62B997818008E662B /* GifAnimation.swift */,
+				022564992BBAA682006D4AD3 /* GIFViewController.swift */,
 				0230190C2BA7F85D00B6996F /* Rain.sks */,
 				0230190E2BA7F87100B6996F /* Smoke.sks */,
 				023019082BA7F82B00B6996F /* Bokeh.sks */,
@@ -147,6 +151,7 @@
 		021F2E1F2B95A8BE00D13367 /* Texture */ = {
 			isa = PBXGroup;
 			children = (
+				027A2DF92B997860008E662B /* testvideo.gif */,
 				02EF175F2BAAB51A002871CE /* crack3.jpeg */,
 				02E870172B95B50500DD4B38 /* color_3.jpeg */,
 				02E8701F2B95B71600DD4B38 /* diffuse_0222.jpeg */,
@@ -187,7 +192,8 @@
 		027A2DF82B997848008E662B /* Gif */ = {
 			isa = PBXGroup;
 			children = (
-				027A2DF92B997860008E662B /* testvideo.gif */,
+				022564972BBA9DA3006D4AD3 /* GlassBreak_01.gif */,
+				0225649B2BBBBFF6006D4AD3 /* GlassBreak_03.gif */,
 			);
 			path = Gif;
 			sourceTree = "<group>";
@@ -270,9 +276,11 @@
 				027A2DFA2B997860008E662B /* testvideo.gif in Resources */,
 				02EF17602BAAB51A002871CE /* crack3.jpeg in Resources */,
 				02E870162B95B4F900DD4B38 /* GlassHead.scn in Resources */,
+				022564982BBA9DA4006D4AD3 /* GlassBreak_01.gif in Resources */,
 				023019072BA7F80200B6996F /* MyParticle.sks in Resources */,
 				0230190F2BA7F87100B6996F /* Smoke.sks in Resources */,
 				02E870202B95B71600DD4B38 /* diffuse_0222.jpeg in Resources */,
+				0225649C2BBBBFF6006D4AD3 /* GlassBreak_03.gif in Resources */,
 				0230190D2BA7F85D00B6996F /* Rain.sks in Resources */,
 				028750BD2BB291A000D003E9 /* GoogleService-Info.plist in Resources */,
 				02E8701D2B95B50600DD4B38 /* Concrete-Smooth-Texture-Normal.jpg in Resources */,
@@ -290,13 +298,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				028750CA2BB2995B00D003E9 /* XYZResponse.swift in Sources */,
-				028750CC2BB29A0D00D003E9 /* XYZStore.swift in Sources */,
 				02EF17622BAABA53002871CE /* GlassHeadManager.swift in Sources */,
 				022DD7882B9DF09C006F53A6 /* ColorResponse.swift in Sources */,
 				023019032BA7F13300B6996F /* UIImage+.swift in Sources */,
 				027A2DF72B997818008E662B /* GifAnimation.swift in Sources */,
 				022DD7862B9DEEC0006F53A6 /* RessentimentService.swift in Sources */,
 				02EF173F2BA972C1002871CE /* UIKitContentView.swift in Sources */,
+				0225649A2BBAA682006D4AD3 /* GIFViewController.swift in Sources */,
 				022DD7842B9DEE92006F53A6 /*  NetworkError.swift in Sources */,
 				021F2E122B95A8A500D13367 /* Ressentiment_iOSApp.swift in Sources */,
 			);

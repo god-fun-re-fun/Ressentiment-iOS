@@ -23,12 +23,12 @@ class SceneViewController: UIViewController {
 
         let scnView = SCNView()
         // scnView의 크기를 부모 뷰의 80%로 설정
-        let viewWidth = self.view.frame.width * 0.3
-        let viewHeight = self.view.frame.height * 0.3
+        let viewWidth = self.view.frame.width * 0.25
+        let viewHeight = self.view.frame.height * 0.25
         // scnView의 프레임을 계산하여 중앙에 위치시킴
         scnView.frame = CGRect(x: 0,
                                y: 0,
-                               width: viewWidth+20,
+                               width: viewWidth+10,
                                height: viewHeight)
         scnView.scene = scene
         scnView.backgroundColor = UIColor.clear
@@ -37,47 +37,6 @@ class SceneViewController: UIViewController {
         self.view.addSubview(scnView)
     }
 }
-
-class GlassHeadManager: NSObject, SCNSceneRendererDelegate {
-    var materialProperty = SCNMaterialProperty(contents: 0.0)
-    var elapsedTime: TimeInterval = 0.0
-
-    func addWaterEffect(to node: SCNNode) {
-        let waterEffectShader = """
-        // GLSL 쉐이더 코드
-        #ifdef GL_ES
-        precision mediump float;
-        #endif
-
-        uniform float time;
-        varying vec2 v_texCoord;
-        varying vec3 v_normal;
-
-        void main(void) {
-            // v_texCoord는 텍스처 좌표, v_normal은 정점의 법선 벡터입니다.
-            // 시간에 따라 변하는 파동 효과를 만듭니다.
-            float wave = sin(v_texCoord.x * 10.0 + time) * 0.1;
-            wave += sin(v_texCoord.y * 10.0 + time) * 0.1;
-            // 최종 색상은 파란색 계열로, 파동 효과를 반영하여 조정합니다.
-            vec3 color = vec3(0.0, 0.2 + wave, 0.4 + wave);
-            gl_FragColor = vec4(color, 1.0);
-        }
-        """
-        node.geometry?.materials.forEach { material in
-            if material.name == "Material_001" {
-                print("====== 123123")
-                material.shaderModifiers = [.surface: waterEffectShader]
-                material.setValue(SCNFloat(elapsedTime), forKey: "time") // 수정된 부분
-            }
-        }
-    }
-
-    func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
-        elapsedTime += time
-    }
-}
-
-
 
 struct SceneViewRepresentable: UIViewControllerRepresentable {
     var scene: SCNScene?
@@ -104,7 +63,7 @@ struct SceneViewRepresentable: UIViewControllerRepresentable {
 }
 
 struct UIKitTestModel: View {
-    @State var rotationDuration: TimeInterval = 2.0
+    @State var rotationDuration: TimeInterval = 70.0
 
     var body: some View {
         VStack {
@@ -135,6 +94,12 @@ struct TestModelUIkit: View {
 
     // DatabaseReference 인스턴스 생성 및 Firebase Database의 루트 참조를 초기화
     var ref: DatabaseReference? = Database.database().reference()
+    @State var xBefore: Int = 0
+    @State var yBefore: Int = 0
+    @State var zBefore: Int = 0
+
+    @State private var isSceneViewVisible = true
+    @State private var isGIFViewVisible = false
 
     var body: some View {
 
@@ -150,69 +115,79 @@ struct TestModelUIkit: View {
 
         return ZStack {
             // Background
-            SceneView(scene: crackScene, options: [.autoenablesDefaultLighting, .allowsCameraControl])
-                .edgesIgnoringSafeArea(.all)
-                .frame(width: UIScreen.main.bounds.width*2.5, height: UIScreen.main.bounds.height*2.5)
-                .position(x: UIScreen.main.bounds.width/2, y: UIScreen.main.bounds.height/2)
-            // default 상태가 움직이도록
-                .onAppear {
-                    let headRotationAction = SCNAction.repeatForever(SCNAction.rotate(by: .pi*1, around: SCNVector3(1, 0, 0), duration: 2))
-                    self.glassHead?.rootNode.runAction(headRotationAction)
-                    let crackRotationAction = SCNAction.repeatForever(SCNAction.rotate(by: .pi*1, around: SCNVector3(-1, 0, 0), duration: 8))
-                    self.crackScene?.rootNode.runAction(crackRotationAction)
-                    changeAnimation(0.5, 0.5, 0.5)
+            if isGIFViewVisible {
+                // GIFView 표시
+                GIFViewRepresentable(particleColor: UIColor(red: self.red+0.2, green: self.green+0.2, blue: self.blue+0.2, alpha: 1.0))
+                    .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+            } else {
+                SceneView(scene: crackScene, options: [.autoenablesDefaultLighting, .allowsCameraControl])
+                    .edgesIgnoringSafeArea(.all)
+                    .frame(width: UIScreen.main.bounds.width*2.5, height: UIScreen.main.bounds.height*2.5)
+                    .position(x: UIScreen.main.bounds.width/3, y: UIScreen.main.bounds.height/3)
+                // default 상태가 움직이도록
+                    .onAppear {
+                        let headRotationAction = SCNAction.repeatForever(SCNAction.rotate(by: .pi*1, around: SCNVector3(1, 0, 0), duration: 5))
+                        self.glassHead?.rootNode.runAction(headRotationAction)
+                        let crackRotationAction = SCNAction.repeatForever(SCNAction.rotate(by: .pi*1, around: SCNVector3(-1, 0, 0), duration: 12))
+                        self.crackScene?.rootNode.runAction(crackRotationAction)
+                        changeAnimation(0.5, 0.5, 0.5)
 
-                    let glassHeadManager = GlassHeadManager()
-                    glassHeadManager.addWaterEffect(to: glassHead!.rootNode)
-                    // SCNSceneRendererDelegate 설정이 필요한 경우 추가 구현
+                        getRealtimeDatabase()
+                    }
+                    .gesture(
+                        DragGesture()
+                            .onChanged { change in
+                                self.timer?.invalidate()
+                                self.timer = Timer.scheduledTimer(withTimeInterval: 8.0, repeats: true) { _ in
+                                    print("no event")
+                                    let headRotationAction = SCNAction.repeatForever(SCNAction.rotate(by: .pi*1, around: SCNVector3(1, 0, 0), duration: 5))
+                                    self.glassHead?.rootNode.runAction(headRotationAction)
+                                    let crackRotationAction = SCNAction.repeatForever(SCNAction.rotate(by: .pi*1, around: SCNVector3(-1, 0, 0), duration: 12))
+                                    self.crackScene?.rootNode.runAction(crackRotationAction)
+                                    changeAnimation(0.5, 0.5, 0.5)
+                                }
+                                if change.translation.height > 0 {
+                                    upRotation()
+                                } else if change.translation.height < 0 {
+                                    downRotation()
+                                } else if change.translation.width > 0 {
+                                    rightRotation()
+                                } else if change.translation.width < 0 {
+                                    leftRotation()
+                                }
 
-                    getRealtimeDatabase()
+                                if self.rotationDuration <= 7.0 {
+                                    print("===== 끝 =====")
+                                    isGIFViewVisible = true
+                                    isSceneViewVisible = false
+                                    print("red: \(self.red) | green: \(self.green) | blue: \(self.blue)")
+                                    RessentimentService().postColor(parameters: ["R":"\(self.red)", "G":"\(self.green)", "B":"\(self.blue)"]) { result in
+                                        switch result {
+                                        case .success(let colorResponse):
+                                            print("=== success: \(colorResponse)")
+                                        case .failure(let error):
+                                            print("API Error: \(error)")
+                                        }
+                                    }
+                                }
+                            }
+                            .onEnded { _ in
+                                // 사용자가 드래그를 끝내면 타이머를 초기화
+                                self.timer?.invalidate()
+                                self.timer = nil
+                            }
+                    )
+
+                // Front
+                if isSceneViewVisible {
+                    SceneViewRepresentable(scene: glassHead, allowsCameraControl: true)
+                        .frame(width: UIScreen.main.bounds.width / 4, height: UIScreen.main.bounds.height / 4)
                 }
-                .gesture(
-                    DragGesture()
-                        .onChanged { change in
-                            self.timer?.invalidate()
-                            self.timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
-                                print("no event")
-                                changeAnimation(0.5, 0.5, 0.5)
-                            }
-
-                            if change.translation.height > 0 {
-                                print("⬆️")
-                                changeAnimation(0.5, 0.5, 1.0)
-                                let rotationAction = SCNAction.rotate(by: .pi*2, around: SCNVector3(-1, 0, 0), duration: self.rotationDuration)
-                                // 속도 갱신
-                                glassHead?.rootNode.runAction(rotationAction)
-                            } else if change.translation.height < 0 {
-                                print("⬇️")
-                                changeAnimation(1.0, 0.5, 0.5)
-                                let rotationAction = SCNAction.rotate(by: .pi*2, around: SCNVector3(1, 0, 0), duration: self.rotationDuration)
-                                glassHead?.rootNode.runAction(rotationAction)
-                            } else if change.translation.width > 0 {
-                                print("➡️")
-                                changeAnimation(0.5, 1.0, 0.5)
-                                let rotationAction = SCNAction.rotate(by: .pi*2, around: SCNVector3(0, 1, 0), duration: self.rotationDuration)
-                                glassHead?.rootNode.runAction(rotationAction)
-                            } else if change.translation.width < 0 {
-                                print("⬅️")
-                                changeAnimation(1.0, 0.5, 1.0)
-                                let rotationAction = SCNAction.rotate(by: .pi*2, around: SCNVector3(0, -1, 0), duration: self.rotationDuration)
-                                glassHead?.rootNode.runAction(rotationAction)
-                            }
-                        }
-                        .onEnded { _ in
-                            // 사용자가 드래그를 끝내면 타이머를 초기화
-                            self.timer?.invalidate()
-                            self.timer = nil
-                        }
-                )
-
-            // Front
-            SceneViewRepresentable(scene: glassHead, allowsCameraControl: true)
-                .frame(width: UIScreen.main.bounds.width / 3, height: UIScreen.main.bounds.height / 4)
-        }
+            }
+        }.animation(.default, value: isGIFViewVisible)
     }
 
+    // RealtimeDatabas 값 받아오는 함수
     func getRealtimeDatabase() {
         // "sensor" 경로의 데이터에 대한 실시간 업데이트를 관찰
         ref?.child("sensor").observe(.value, with: { snapshot in
@@ -224,17 +199,98 @@ struct TestModelUIkit: View {
                 return
             }
 
+            let fixPitch = -32
+            let fixRoll = 39
+
             // x, y, z 값을 읽어옵니다.
-            if let xValue = value["x"] as? Int,
-               let yValue = value["y"] as? Int,
-               let zValue = value["z"] as? Int {
-                print("x: \(xValue), y: \(yValue), z: \(zValue)")
+            if let pitch = value["pitch"] as? Int,
+               let roll = value["roll"] as? Int {
+                print("pitch: \(pitch), roll: \(roll)")
+
+
+                if fixRoll - roll < -3{
+                    upRotation()
+                } else if fixRoll - roll > 2 {
+                    downRotation()
+                } else if fixPitch - pitch > 3 {
+                    rightRotation()
+                } else if fixPitch - pitch < -2 {
+                    leftRotation()
+                }
+
+                if self.rotationDuration <= 7.0 {
+                    print("끝")
+                    print("red: \(self.red) | green: \(self.green) | blue: \(self.blue)")
+                    isGIFViewVisible = true
+                    isSceneViewVisible = false
+                    RessentimentService().postColor(parameters: ["R":"\(self.red)", "G":"\(self.green)", "B":"\(self.blue)"]) { result in
+                        switch result {
+                        case .success(let colorResponse):
+                            print("=== success: \(colorResponse)")
+                        case .failure(let error):
+                            print("API Error: \(error)")
+                        }
+                    }
+                }
             } else {
                 print("올바른 데이터 형식이 아닙니다.")
             }
         }) { error in
             print(error.localizedDescription)
         }
+    }
+
+    // 위로 움직임
+    func upRotation() {
+        let rotationAction = SCNAction.rotate(by: .pi*2, around: SCNVector3(-1, 0, 0), duration: self.rotationDuration)
+        let rotationAction2 = SCNAction.rotate(by: .pi*2, around: SCNVector3(1, 0, 0), duration: self.rotationDuration-6)
+        // -1,0,0
+        changeAnimation(0.5, 0.5, 1.0)
+        glassHead?.rootNode.removeAllActions()
+        crackScene?.rootNode.removeAllActions()
+        glassHead?.rootNode.runAction(rotationAction)
+        crackScene?.rootNode.runAction(rotationAction2)
+        print("⬆️: \(self.rotationDuration)")
+    }
+
+    // 아래 움직임
+    func downRotation() {
+        self.rotationDuration -= 9
+        let rotationAction = SCNAction.rotate(by: .pi*10, around: SCNVector3(1, 0, 0), duration: self.rotationDuration)
+        let rotationAction2 = SCNAction.rotate(by: .pi*10, around: SCNVector3(-1, 0, 0), duration: self.rotationDuration-6)
+        changeAnimation(1.0, 0.5, 0.5)
+        glassHead?.rootNode.removeAllActions()
+        crackScene?.rootNode.removeAllActions()
+        glassHead?.rootNode.runAction(rotationAction)
+        crackScene?.rootNode.runAction(rotationAction2)
+        print("⬇️: \(self.rotationDuration)")
+    }
+
+    // 왼쪽으로 움직임
+    func rightRotation() {
+        print("➡️")
+        changeAnimation(0.5, 1.0, 0.5)
+        let rotationAction = SCNAction.rotate(by: .pi*8, around: SCNVector3(0, -1, 0), duration: self.rotationDuration)
+        let rotationAction2 = SCNAction.rotate(by: .pi*8, around: SCNVector3(0, -1, 0), duration: self.rotationDuration)
+        changeAnimation(1.0, 0.5, 0.5)
+        glassHead?.rootNode.removeAllActions()
+        crackScene?.rootNode.removeAllActions()
+        glassHead?.rootNode.runAction(rotationAction)
+        crackScene?.rootNode.runAction(rotationAction2)
+    }
+
+    // 오른쪽으로 움직임
+    func leftRotation() {
+        print("⬅️")
+        changeAnimation(0.5, 1.0, 0.5)
+        let rotationAction = SCNAction.rotate(by: .pi*8, around: SCNVector3(0, 1, 0), duration: self.rotationDuration)
+        let rotationAction2 = SCNAction.rotate(by: .pi*8, around: SCNVector3(0, 1, 0), duration: self.rotationDuration)
+        changeAnimation(1.0, 0.5, 0.5)
+        glassHead?.rootNode.removeAllActions()
+        crackScene?.rootNode.removeAllActions()
+        glassHead?.rootNode.runAction(rotationAction)
+        crackScene?.rootNode.runAction(rotationAction2)
+
     }
 
     // 조명 생성 함수
@@ -252,7 +308,7 @@ struct TestModelUIkit: View {
 
     // 색상 변경 함수
     func changeColor(_ goalRed: CGFloat, _ goalGreen: CGFloat, _ goalBlue: CGFloat) -> UIColor {
-        print("=== color change func 🎨 ===")
+        // print("=== color change func 🎨 ===")
         let newRed = self.red + (goalRed - self.red)/velocity
         self.red = newRed
         let newGreen = self.green + (goalGreen - self.green)/velocity
@@ -261,14 +317,15 @@ struct TestModelUIkit: View {
         self.blue = newBlue
 
         // print("🌀🌀newBlue: \(self.blue)")
-        //        print("🌀🌀🌀newBlue: \(self.blue + (goalBlue - self.blue)/velocity)")
+        // print("🌀🌀🌀newBlue: \(self.blue + (goalBlue - self.blue)/velocity)")
 
         let newColor = UIColor(red: red, green: green, blue: blue, alpha: 1.0)
         return newColor
     }
 
+    // 색상 변경 반영하면서 애니메이션 적용
     func changeAnimation(_ goalRed: CGFloat, _ goalGreen: CGFloat, _ goalBlue: CGFloat) {
-        print("=== changeAnimation func 📽️ ===")
+        //print("=== changeAnimation func 📽️ ===")
         glassHead?.rootNode.enumerateChildNodes { node, _ in
             node.geometry?.materials.forEach { material in
                 // Material_001 머테리얼만 찾아서 색상 변경 적용
@@ -280,7 +337,7 @@ struct TestModelUIkit: View {
                     SCNTransaction.begin()
                     SCNTransaction.animationDuration = 0.5 // 애니메이션 지속 시간 설정
                     material.diffuse.contents = newColor
-                    print("🌀🌀newColor: \(newColor)")
+                    // print("🌀🌀newColor: \(newColor)")
                     SCNTransaction.commit()
                 }
             }
@@ -290,12 +347,7 @@ struct TestModelUIkit: View {
 
 struct UIKitTestModel_Previews: PreviewProvider {
     static var previews: some View {
-        if #available(iOS 15.0, *) {
-            UIKitTestModel()
-                .previewInterfaceOrientation(.landscapeLeft)
-        } else {
-            UIKitTestModel()
-        }
+        UIKitTestModel()
     }
 }
 
