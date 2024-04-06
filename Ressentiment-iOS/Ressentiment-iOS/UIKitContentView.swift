@@ -8,6 +8,7 @@
 import UIKit
 import SwiftUI
 
+import AVFoundation
 import SceneKit
 
 import Firebase
@@ -101,6 +102,8 @@ struct TestModelUIkit: View {
     @State private var isSceneViewVisible = true
     @State private var isGIFViewVisible = false
 
+    @State var audioPlayer: AVAudioPlayer?
+
     var body: some View {
 
         if let scene = crackScene {
@@ -126,6 +129,8 @@ struct TestModelUIkit: View {
                     .position(x: UIScreen.main.bounds.width/3, y: UIScreen.main.bounds.height/3)
                 // default 상태가 움직이도록
                     .onAppear {
+                        musicRollingBall()
+
                         let headRotationAction = SCNAction.repeatForever(SCNAction.rotate(by: .pi*1, around: SCNVector3(1, 0, 0), duration: 5))
                         self.glassHead?.rootNode.runAction(headRotationAction)
                         let crackRotationAction = SCNAction.repeatForever(SCNAction.rotate(by: .pi*1, around: SCNVector3(-1, 0, 0), duration: 12))
@@ -146,6 +151,7 @@ struct TestModelUIkit: View {
                                     self.crackScene?.rootNode.runAction(crackRotationAction)
                                     changeAnimation(0.5, 0.5, 0.5)
                                 }
+                                musicRollingBall()
                                 if change.translation.height > 0 {
                                     upRotation()
                                 } else if change.translation.height < 0 {
@@ -158,8 +164,11 @@ struct TestModelUIkit: View {
 
                                 if self.rotationDuration <= 7.0 {
                                     print("===== 끝 =====")
-                                    isGIFViewVisible = true
+                                    withAnimation(.easeOut(duration: 0.5)) {
+                                        isGIFViewVisible = true
+                                    }
                                     isSceneViewVisible = false
+                                    stopMusic()
                                     print("red: \(self.red) | green: \(self.green) | blue: \(self.blue)")
                                     RessentimentService().postColor(parameters: ["R":"\(self.red)", "G":"\(self.green)", "B":"\(self.blue)"]) { result in
                                         switch result {
@@ -184,7 +193,7 @@ struct TestModelUIkit: View {
                         .frame(width: UIScreen.main.bounds.width / 4, height: UIScreen.main.bounds.height / 4)
                 }
             }
-        }.animation(.default, value: isGIFViewVisible)
+        }
     }
 
     // RealtimeDatabas 값 받아오는 함수
@@ -193,7 +202,6 @@ struct TestModelUIkit: View {
         ref?.child("sensor").observe(.value, with: { snapshot in
             // snapshot이 감지되면 여기의 코드가 실행됩니다.
             // snapshot.value를 통해 데이터를 가져올 수 있습니다.
-
             guard let value = snapshot.value as? [String: Any] else {
                 print("데이터를 가져오는 데 실패했습니다.")
                 return
@@ -242,6 +250,7 @@ struct TestModelUIkit: View {
 
     // 위로 움직임
     func upRotation() {
+        self.rotationDuration += 5
         let rotationAction = SCNAction.rotate(by: .pi*2, around: SCNVector3(-1, 0, 0), duration: self.rotationDuration)
         let rotationAction2 = SCNAction.rotate(by: .pi*2, around: SCNVector3(1, 0, 0), duration: self.rotationDuration-6)
         // -1,0,0
@@ -255,7 +264,7 @@ struct TestModelUIkit: View {
 
     // 아래 움직임
     func downRotation() {
-        self.rotationDuration -= 9
+        self.rotationDuration -= 10
         let rotationAction = SCNAction.rotate(by: .pi*10, around: SCNVector3(1, 0, 0), duration: self.rotationDuration)
         let rotationAction2 = SCNAction.rotate(by: .pi*10, around: SCNVector3(-1, 0, 0), duration: self.rotationDuration-6)
         changeAnimation(1.0, 0.5, 0.5)
@@ -272,7 +281,6 @@ struct TestModelUIkit: View {
         changeAnimation(0.5, 1.0, 0.5)
         let rotationAction = SCNAction.rotate(by: .pi*8, around: SCNVector3(0, -1, 0), duration: self.rotationDuration)
         let rotationAction2 = SCNAction.rotate(by: .pi*8, around: SCNVector3(0, -1, 0), duration: self.rotationDuration)
-        changeAnimation(1.0, 0.5, 0.5)
         glassHead?.rootNode.removeAllActions()
         crackScene?.rootNode.removeAllActions()
         glassHead?.rootNode.runAction(rotationAction)
@@ -285,12 +293,35 @@ struct TestModelUIkit: View {
         changeAnimation(0.5, 1.0, 0.5)
         let rotationAction = SCNAction.rotate(by: .pi*8, around: SCNVector3(0, 1, 0), duration: self.rotationDuration)
         let rotationAction2 = SCNAction.rotate(by: .pi*8, around: SCNVector3(0, 1, 0), duration: self.rotationDuration)
-        changeAnimation(1.0, 0.5, 0.5)
         glassHead?.rootNode.removeAllActions()
         crackScene?.rootNode.removeAllActions()
         glassHead?.rootNode.runAction(rotationAction)
         crackScene?.rootNode.runAction(rotationAction2)
 
+    }
+
+    // 음악 Play 함수
+    func musicRollingBall() {
+        if let bundlePath = Bundle.main.path(forResource: "rollingBall.mp3", ofType: nil),
+           let music = URL(string: bundlePath) {
+            do {
+                audioPlayer = try AVAudioPlayer(contentsOf: music)
+                audioPlayer?.prepareToPlay()
+                audioPlayer?.play()
+                audioPlayer?.numberOfLoops = -1
+            } catch {
+                print("음악 파일을 재생할 수 없습니다.")
+            }
+        }
+    }
+
+    func stopMusic() {
+        if audioPlayer?.isPlaying == true {
+            audioPlayer?.stop()
+            // 재생 위치를 초기화
+            audioPlayer?.currentTime = 0
+            print("=== 음악 멈춤")
+        }
     }
 
     // 조명 생성 함수

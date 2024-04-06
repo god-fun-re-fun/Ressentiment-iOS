@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		020DB8092BC120D5008872FD /* StartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020DB8082BC120D5008872FD /* StartViewController.swift */; };
+		020DB80C2BC123D5008872FD /* rollingBall.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 020DB80B2BC123D5008872FD /* rollingBall.mp3 */; };
+		020DB80E2BC12C40008872FD /* glassHit.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 020DB80D2BC12C40008872FD /* glassHit.mp3 */; };
 		021F2E122B95A8A500D13367 /* Ressentiment_iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021F2E112B95A8A500D13367 /* Ressentiment_iOSApp.swift */; };
 		021F2E162B95A8A600D13367 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 021F2E152B95A8A600D13367 /* Assets.xcassets */; };
 		021F2E192B95A8A600D13367 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 021F2E182B95A8A600D13367 /* Preview Assets.xcassets */; };
@@ -46,6 +49,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		020DB8082BC120D5008872FD /* StartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartViewController.swift; sourceTree = "<group>"; };
+		020DB80B2BC123D5008872FD /* rollingBall.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = rollingBall.mp3; sourceTree = "<group>"; };
+		020DB80D2BC12C40008872FD /* glassHit.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = glassHit.mp3; sourceTree = "<group>"; };
 		021F2E0E2B95A8A500D13367 /* Ressentiment-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Ressentiment-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		021F2E112B95A8A500D13367 /* Ressentiment_iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ressentiment_iOSApp.swift; sourceTree = "<group>"; };
 		021F2E152B95A8A600D13367 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -97,6 +103,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		020DB80A2BC123B9008872FD /* Particles */ = {
+			isa = PBXGroup;
+			children = (
+				023019062BA7F80200B6996F /* MyParticle.sks */,
+				0230190C2BA7F85D00B6996F /* Rain.sks */,
+				0230190E2BA7F87100B6996F /* Smoke.sks */,
+				023019082BA7F82B00B6996F /* Bokeh.sks */,
+				0230190A2BA7F84300B6996F /* Magic.sks */,
+			);
+			path = Particles;
+			sourceTree = "<group>";
+		};
 		021F2E052B95A8A500D13367 = {
 			isa = PBXGroup;
 			children = (
@@ -120,6 +138,7 @@
 				022DD7822B9DEE83006F53A6 /* Network */,
 				022DD7812B9DEE13006F53A6 /* Info.plist */,
 				028750BC2BB291A000D003E9 /* GoogleService-Info.plist */,
+				020DB80A2BC123B9008872FD /* Particles */,
 				027A2DF82B997848008E662B /* Gif */,
 				021F2E202B95A8D300D13367 /* Object */,
 				021F2E1F2B95A8BE00D13367 /* Texture */,
@@ -129,12 +148,10 @@
 				023019022BA7F13300B6996F /* UIImage+.swift */,
 				027A2DF62B997818008E662B /* GifAnimation.swift */,
 				022564992BBAA682006D4AD3 /* GIFViewController.swift */,
-				0230190C2BA7F85D00B6996F /* Rain.sks */,
-				0230190E2BA7F87100B6996F /* Smoke.sks */,
-				023019082BA7F82B00B6996F /* Bokeh.sks */,
-				0230190A2BA7F84300B6996F /* Magic.sks */,
+				020DB8082BC120D5008872FD /* StartViewController.swift */,
 				021F2E152B95A8A600D13367 /* Assets.xcassets */,
-				023019062BA7F80200B6996F /* MyParticle.sks */,
+				020DB80D2BC12C40008872FD /* glassHit.mp3 */,
+				020DB80B2BC123D5008872FD /* rollingBall.mp3 */,
 				021F2E172B95A8A600D13367 /* Preview Content */,
 			);
 			path = "Ressentiment-iOS";
@@ -282,11 +299,13 @@
 				02E870202B95B71600DD4B38 /* diffuse_0222.jpeg in Resources */,
 				0225649C2BBBBFF6006D4AD3 /* GlassBreak_03.gif in Resources */,
 				0230190D2BA7F85D00B6996F /* Rain.sks in Resources */,
+				020DB80E2BC12C40008872FD /* glassHit.mp3 in Resources */,
 				028750BD2BB291A000D003E9 /* GoogleService-Info.plist in Resources */,
 				02E8701D2B95B50600DD4B38 /* Concrete-Smooth-Texture-Normal.jpg in Resources */,
 				023019092BA7F82B00B6996F /* Bokeh.sks in Resources */,
 				02E8701B2B95B50600DD4B38 /* color_3.jpeg in Resources */,
 				02E8701E2B95B50600DD4B38 /* Concrete-Smooth-Texture-Roughness.jpg in Resources */,
+				020DB80C2BC123D5008872FD /* rollingBall.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -302,6 +321,7 @@
 				022DD7882B9DF09C006F53A6 /* ColorResponse.swift in Sources */,
 				023019032BA7F13300B6996F /* UIImage+.swift in Sources */,
 				027A2DF72B997818008E662B /* GifAnimation.swift in Sources */,
+				020DB8092BC120D5008872FD /* StartViewController.swift in Sources */,
 				022DD7862B9DEEC0006F53A6 /* RessentimentService.swift in Sources */,
 				02EF173F2BA972C1002871CE /* UIKitContentView.swift in Sources */,
 				0225649A2BBAA682006D4AD3 /* GIFViewController.swift in Sources */,
