@@ -63,7 +63,7 @@ struct SceneViewRepresentable: UIViewControllerRepresentable {
     }
 }
 
-struct UIKitTestModel: View {
+struct MainView: View {
     @State var rotationDuration: TimeInterval = 70.0
 
     var body: some View {
@@ -120,7 +120,7 @@ struct TestModelUIkit: View {
             // Background
             if isGIFViewVisible {
                 // GIFView 표시
-                GIFViewRepresentable(particleColor: UIColor(red: self.red+0.2, green: self.green+0.2, blue: self.blue+0.2, alpha: 1.0))
+                GIFViewRepresentable(particleColor: UIColor(red: self.red, green: self.green, blue: self.blue, alpha: 1.0))
                     .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
             } else {
                 SceneView(scene: crackScene, options: [.autoenablesDefaultLighting, .allowsCameraControl])
@@ -138,6 +138,9 @@ struct TestModelUIkit: View {
                         changeAnimation(0.5, 0.5, 0.5)
 
                         getRealtimeDatabase()
+                    }
+                    .onDisappear {
+                        stopMusic()
                     }
                     .gesture(
                         DragGesture()
@@ -267,7 +270,7 @@ struct TestModelUIkit: View {
         self.rotationDuration -= 10
         let rotationAction = SCNAction.rotate(by: .pi*10, around: SCNVector3(1, 0, 0), duration: self.rotationDuration)
         let rotationAction2 = SCNAction.rotate(by: .pi*10, around: SCNVector3(-1, 0, 0), duration: self.rotationDuration-6)
-        changeAnimation(1.0, 0.5, 0.5)
+        changeAnimation(1.0, 0.3, 0.3)
         glassHead?.rootNode.removeAllActions()
         crackScene?.rootNode.removeAllActions()
         glassHead?.rootNode.runAction(rotationAction)
@@ -340,11 +343,11 @@ struct TestModelUIkit: View {
     // 색상 변경 함수
     func changeColor(_ goalRed: CGFloat, _ goalGreen: CGFloat, _ goalBlue: CGFloat) -> UIColor {
         // print("=== color change func 🎨 ===")
-        let newRed = self.red + (goalRed - self.red)/velocity
+        let newRed = self.red + (goalRed - self.red)/(velocity/2)
         self.red = newRed
-        let newGreen = self.green + (goalGreen - self.green)/velocity
+        let newGreen = self.green + (goalGreen - self.green)/(velocity/2)
         self.green = newGreen
-        let newBlue = self.blue + (goalBlue - self.blue)/velocity
+        let newBlue = self.blue + (goalBlue - self.blue)/(velocity/2)
         self.blue = newBlue
 
         // print("🌀🌀newBlue: \(self.blue)")
@@ -378,7 +381,7 @@ struct TestModelUIkit: View {
 
 struct UIKitTestModel_Previews: PreviewProvider {
     static var previews: some View {
-        UIKitTestModel()
+        MainView()
     }
 }
 

@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		020DB8092BC120D5008872FD /* StartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020DB8082BC120D5008872FD /* StartViewController.swift */; };
+		020DB8092BC120D5008872FD /* StartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020DB8082BC120D5008872FD /* StartView.swift */; };
 		020DB80C2BC123D5008872FD /* rollingBall.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 020DB80B2BC123D5008872FD /* rollingBall.mp3 */; };
 		020DB80E2BC12C40008872FD /* glassHit.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 020DB80D2BC12C40008872FD /* glassHit.mp3 */; };
 		021F2E122B95A8A500D13367 /* Ressentiment_iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021F2E112B95A8A500D13367 /* Ressentiment_iOSApp.swift */; };
@@ -49,7 +49,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		020DB8082BC120D5008872FD /* StartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartViewController.swift; sourceTree = "<group>"; };
+		020DB8082BC120D5008872FD /* StartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartView.swift; sourceTree = "<group>"; };
 		020DB80B2BC123D5008872FD /* rollingBall.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = rollingBall.mp3; sourceTree = "<group>"; };
 		020DB80D2BC12C40008872FD /* glassHit.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = glassHit.mp3; sourceTree = "<group>"; };
 		021F2E0E2B95A8A500D13367 /* Ressentiment-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Ressentiment-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -148,7 +148,7 @@
 				023019022BA7F13300B6996F /* UIImage+.swift */,
 				027A2DF62B997818008E662B /* GifAnimation.swift */,
 				022564992BBAA682006D4AD3 /* GIFViewController.swift */,
-				020DB8082BC120D5008872FD /* StartViewController.swift */,
+				020DB8082BC120D5008872FD /* StartView.swift */,
 				021F2E152B95A8A600D13367 /* Assets.xcassets */,
 				020DB80D2BC12C40008872FD /* glassHit.mp3 */,
 				020DB80B2BC123D5008872FD /* rollingBall.mp3 */,
@@ -321,7 +321,7 @@
 				022DD7882B9DF09C006F53A6 /* ColorResponse.swift in Sources */,
 				023019032BA7F13300B6996F /* UIImage+.swift in Sources */,
 				027A2DF72B997818008E662B /* GifAnimation.swift in Sources */,
-				020DB8092BC120D5008872FD /* StartViewController.swift in Sources */,
+				020DB8092BC120D5008872FD /* StartView.swift in Sources */,
 				022DD7862B9DEEC0006F53A6 /* RessentimentService.swift in Sources */,
 				02EF173F2BA972C1002871CE /* UIKitContentView.swift in Sources */,
 				0225649A2BBAA682006D4AD3 /* GIFViewController.swift in Sources */,

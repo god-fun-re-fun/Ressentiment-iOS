@@ -25,7 +25,7 @@ struct Ressentiment_iOSApp: App {
 
   var body: some Scene {
     WindowGroup {
-        UIKitTestModel()
+        StartView()
     }
   }
 }
