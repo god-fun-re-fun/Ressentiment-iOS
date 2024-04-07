@@ -122,6 +122,7 @@ struct TestModelUIkit: View {
                 // GIFView 표시
                 GIFViewRepresentable(particleColor: UIColor(red: self.red, green: self.green, blue: self.blue, alpha: 1.0))
                     .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+                    .transition(.opacity)
             } else {
                 SceneView(scene: crackScene, options: [.autoenablesDefaultLighting, .allowsCameraControl])
                     .edgesIgnoringSafeArea(.all)
@@ -165,22 +166,9 @@ struct TestModelUIkit: View {
                                     leftRotation()
                                 }
 
-                                if self.rotationDuration <= 7.0 {
-                                    print("===== 끝 =====")
-                                    withAnimation(.easeOut(duration: 0.5)) {
-                                        isGIFViewVisible = true
-                                    }
-                                    isSceneViewVisible = false
-                                    stopMusic()
-                                    print("red: \(self.red) | green: \(self.green) | blue: \(self.blue)")
-                                    RessentimentService().postColor(parameters: ["R":"\(self.red)", "G":"\(self.green)", "B":"\(self.blue)"]) { result in
-                                        switch result {
-                                        case .success(let colorResponse):
-                                            print("=== success: \(colorResponse)")
-                                        case .failure(let error):
-                                            print("API Error: \(error)")
-                                        }
-                                    }
+                                if self.rotationDuration <= 10.0 {
+                                    print("=== The End TouchEvent===")
+                                    changeView()
                                 }
                             }
                             .onEnded { _ in
@@ -220,28 +208,18 @@ struct TestModelUIkit: View {
 
 
                 if fixRoll - roll < -3{
-                    upRotation()
-                } else if fixRoll - roll > 2 {
                     downRotation()
+                } else if fixRoll - roll > 2 {
+                    upRotation()
                 } else if fixPitch - pitch > 3 {
-                    rightRotation()
-                } else if fixPitch - pitch < -2 {
                     leftRotation()
+                } else if fixPitch - pitch < -2 {
+                    rightRotation()
                 }
 
-                if self.rotationDuration <= 7.0 {
-                    print("끝")
-                    print("red: \(self.red) | green: \(self.green) | blue: \(self.blue)")
-                    isGIFViewVisible = true
-                    isSceneViewVisible = false
-                    RessentimentService().postColor(parameters: ["R":"\(self.red)", "G":"\(self.green)", "B":"\(self.blue)"]) { result in
-                        switch result {
-                        case .success(let colorResponse):
-                            print("=== success: \(colorResponse)")
-                        case .failure(let error):
-                            print("API Error: \(error)")
-                        }
-                    }
+                if self.rotationDuration <= 10.0 {
+                    print("=== The End Arduino===")
+                    changeView()
                 }
             } else {
                 print("올바른 데이터 형식이 아닙니다.")
@@ -301,6 +279,25 @@ struct TestModelUIkit: View {
         glassHead?.rootNode.runAction(rotationAction)
         crackScene?.rootNode.runAction(rotationAction2)
 
+    }
+
+    // view 전환 및 api post
+    func changeView() {
+        // print("red: \(self.red) | green: \(self.green) | blue: \(self.blue)")
+        withAnimation(.easeOut(duration: 0.7)) {
+            isGIFViewVisible = true
+        }
+        // isSceneViewVisible = false
+        self.rotationDuration = 30.0
+        stopMusic()
+        RessentimentService().postColor(parameters: ["R":"\(self.red)", "G":"\(self.green)", "B":"\(self.blue)"]) { result in
+            switch result {
+            case .success(let colorResponse):
+                print("=== success: \(colorResponse)")
+            case .failure(let error):
+                print("API Error: \(error)")
+            }
+        }
     }
 
     // 음악 Play 함수
