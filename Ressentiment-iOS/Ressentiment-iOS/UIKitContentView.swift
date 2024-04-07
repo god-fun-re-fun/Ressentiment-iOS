@@ -88,6 +88,10 @@ struct TestModelUIkit: View {
     @State var blue: CGFloat = 0.5
     let alpha: CGFloat = 1.0
 
+    @State var endPoint = 100
+    
+    @Environment(\.presentationMode) var presentationMode
+
     // DatabaseReference 인스턴스 생성 및 Firebase Database의 루트 참조를 초기화
     var ref: DatabaseReference? = Database.database().reference()
 
@@ -102,7 +106,11 @@ struct TestModelUIkit: View {
                 GIFViewRepresentable(particleColor: UIColor(red: self.red, green: self.green, blue: self.blue, alpha: 1.0))
                     .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
                     .transition(.opacity)
-                    .animation(.easeOut(duration: 0.3))
+                    .animation(.easeOut(duration: 0.3)) 
+                    .onTapGesture {
+                        // 여기에 뷰를 닫는 코드를 추가합니다.
+                        presentationMode.wrappedValue.dismiss()
+                    }
             } else {
                 SceneView(scene: crackScene, options: [.autoenablesDefaultLighting, .allowsCameraControl])
                     .edgesIgnoringSafeArea(.all)
@@ -130,6 +138,30 @@ struct TestModelUIkit: View {
             }
         }
         .animation(.easeOut(duration: 0.3), value: isGIFViewVisible)
+    }
+
+    // 모든 초기 설정을 처리하는 함수
+    private func setupScene() {
+        // 음악 재생 및 초기 애니메이션 적용
+        musicRollingBall()
+        applyInitialAnimations()
+        getRealtimeDatabase()
+    }
+
+    // 초기 애니메이션 적용
+    private func applyInitialAnimations() {
+        // 초기 애니메이션 적용 로직
+        if let glassHeadScene = self.glassHead {
+            let headRotationAction = SCNAction.repeatForever(SCNAction.rotate(by: .pi, around: SCNVector3(1, 0, 0), duration: rotationDuration))
+            glassHeadScene.rootNode.runAction(headRotationAction)
+        }
+
+        if let crackScene = self.crackScene {
+            let crackRotationAction = SCNAction.repeatForever(SCNAction.rotate(by: .pi, around: SCNVector3(-1, 0, 0), duration: rotationDuration * 2))
+            crackScene.rootNode.runAction(crackRotationAction)
+        }
+
+        changeAnimation(0.5, 0.5, 0.5)
     }
 
     // RealtimeDatabas 값 받아오는 함수
@@ -162,7 +194,7 @@ struct TestModelUIkit: View {
                     rightRotation()
                 }
 
-                if self.rotationDuration <= 10.0 {
+                if endPoint <= 1 {
                     print("=== The End Arduino===")
                     changeView()
                 }
@@ -172,29 +204,6 @@ struct TestModelUIkit: View {
         }) { error in
             print(error.localizedDescription)
         }
-    }
-
-    // 모든 초기 설정을 처리하는 함수
-    private func setupScene() {
-        // 음악 재생 및 초기 애니메이션 적용
-        musicRollingBall()
-        applyInitialAnimations()
-    }
-
-    // 초기 애니메이션 적용
-    private func applyInitialAnimations() {
-        // 초기 애니메이션 적용 로직
-        if let glassHeadScene = self.glassHead {
-            let headRotationAction = SCNAction.repeatForever(SCNAction.rotate(by: .pi, around: SCNVector3(1, 0, 0), duration: rotationDuration))
-            glassHeadScene.rootNode.runAction(headRotationAction)
-        }
-
-        if let crackScene = self.crackScene {
-            let crackRotationAction = SCNAction.repeatForever(SCNAction.rotate(by: .pi, around: SCNVector3(-1, 0, 0), duration: rotationDuration * 2))
-            crackScene.rootNode.runAction(crackRotationAction)
-        }
-
-        changeAnimation(0.5, 0.5, 0.5)
     }
 
     // 드래그 이벤트 핸들링
@@ -222,7 +231,9 @@ struct TestModelUIkit: View {
             leftRotation()
         }
 
-        if self.rotationDuration <= 10.0 {
+        print("==== endPoint: \(self.endPoint)")
+
+        if endPoint <= 1 {
             print("=== The End TouchEvent===")
             changeView()
         }
@@ -237,11 +248,12 @@ struct TestModelUIkit: View {
 
     // 위로 움직임
     func upRotation() {
-        self.rotationDuration += 5
+        self.rotationDuration += 2
+        self.endPoint -= Int(rotationDuration)/7
         let rotationAction = SCNAction.rotate(by: .pi*6, around: SCNVector3(-1, 0, 0), duration: self.rotationDuration)
         let rotationAction2 = SCNAction.rotate(by: .pi*6, around: SCNVector3(1, 0, 0), duration: self.rotationDuration-6)
         // -1,0,0
-        changeAnimation(0.5, 0.5, 1.0)
+        changeAnimation(0.15, 0.87, 1.0)
         glassHead?.rootNode.removeAllActions()
         crackScene?.rootNode.removeAllActions()
         glassHead?.rootNode.runAction(rotationAction)
@@ -249,12 +261,24 @@ struct TestModelUIkit: View {
         print("⬆️: \(self.rotationDuration)")
     }
 
+    @State var downCount: Int = 0
+
     // 아래 움직임
     func downRotation() {
-        self.rotationDuration -= 10
+        if self.rotationDuration <= 7{
+            self.rotationDuration = 7
+        } else {
+            self.rotationDuration -= 5
+        }
+        self.endPoint -= Int(rotationDuration)/7
+        self.downCount += 1
+        if (downCount > 8) {
+            changeAnimation(0.86, 0.04, 0.17)
+        } else {
+            changeAnimation(1.0, 0.4, 0.55)
+        }
         let rotationAction = SCNAction.rotate(by: .pi*10, around: SCNVector3(1, 0, 0), duration: self.rotationDuration)
         let rotationAction2 = SCNAction.rotate(by: .pi*10, around: SCNVector3(-1, 0, 0), duration: self.rotationDuration-6)
-        changeAnimation(1.0, 0.3, 0.3)
         glassHead?.rootNode.removeAllActions()
         crackScene?.rootNode.removeAllActions()
         glassHead?.rootNode.runAction(rotationAction)
@@ -265,7 +289,8 @@ struct TestModelUIkit: View {
     // 왼쪽으로 움직임
     func rightRotation() {
         print("➡️")
-        changeAnimation(0.5, 1.0, 0.5)
+        self.endPoint -= Int(rotationDuration)/7
+        changeAnimation(0.71, 0.94, 0.17)
         let rotationAction = SCNAction.rotate(by: .pi*8, around: SCNVector3(0, -1, 0), duration: self.rotationDuration)
         let rotationAction2 = SCNAction.rotate(by: .pi*8, around: SCNVector3(0, -1, 0), duration: self.rotationDuration)
         glassHead?.rootNode.removeAllActions()
@@ -277,7 +302,8 @@ struct TestModelUIkit: View {
     // 오른쪽으로 움직임
     func leftRotation() {
         print("⬅️")
-        changeAnimation(0.5, 1.0, 0.5)
+        self.endPoint -= Int(rotationDuration)/7
+        changeAnimation(0.71, 0.94, 0.17)
         let rotationAction = SCNAction.rotate(by: .pi*8, around: SCNVector3(0, 1, 0), duration: self.rotationDuration)
         let rotationAction2 = SCNAction.rotate(by: .pi*8, around: SCNVector3(0, 1, 0), duration: self.rotationDuration)
         glassHead?.rootNode.removeAllActions()

@@ -14,8 +14,8 @@
             filePath = "Ressentiment-iOS/UIKitContentView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "347"
-            endingLineNumber = "347"
+            startingLineNumber = "373"
+            endingLineNumber = "373"
             landmarkName = "changeColor(_:_:_:)"
             landmarkType = "7">
             <Locations>
@@ -65,6 +65,22 @@
             startingLineNumber = "16"
             endingLineNumber = "16"
             landmarkName = "postColor(parameters:completion:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "62D9BF75-DE61-46A9-8F46-802AF5DE12BC"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Ressentiment-iOS/UIKitContentView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "266"
+            endingLineNumber = "266"
+            landmarkName = "downRotation()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
