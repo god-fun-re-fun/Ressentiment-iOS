@@ -76,17 +76,12 @@ struct MainView: View {
 }
 
 struct TestModelUIkit: View {
-    @State var index = 0
-    @State var isRolling = false
-    @State var lastDragAmount: CGFloat = 0
-    @Binding var rotationDuration: TimeInterval
-    @State var rotationPi: Double = .pi
-    @State private var timer: Timer? = nil
-
-    @State var velocity: CGFloat = 30
-
-    @State var glassHead: SCNScene? = SCNScene(named: "GlassHead.scn") // Add this line
+    @State var glassHead: SCNScene? = SCNScene(named: "GlassHead.scn")
     @State var crackScene = SCNScene(named: "Concrete-Smooth.usdz")
+
+    @State private var timer: Timer? = nil
+    @State var velocity: CGFloat = 30
+    @Binding var rotationDuration: TimeInterval
 
     @State var red: CGFloat = 0.5
     @State var green: CGFloat = 0.5
@@ -95,9 +90,6 @@ struct TestModelUIkit: View {
 
     // DatabaseReference 인스턴스 생성 및 Firebase Database의 루트 참조를 초기화
     var ref: DatabaseReference? = Database.database().reference()
-    @State var xBefore: Int = 0
-    @State var yBefore: Int = 0
-    @State var zBefore: Int = 0
 
     @State private var isSceneViewVisible = true
     @State private var isGIFViewVisible = false
@@ -105,40 +97,19 @@ struct TestModelUIkit: View {
     @State var audioPlayer: AVAudioPlayer?
 
     var body: some View {
-
-        if let scene = crackScene {
-            // 앞, 뒤, 좌, 우 조명 위치 설정
-            let frontLightNode = createLightNode(color: .white, position: SCNVector3(x: 0, y: 30, z: 0))
-            let backLightNode = createLightNode(color: .white, position: SCNVector3(x: 0, y: -30, z: 0))
-
-            // 조명 노드를 씬 그래프에 추가
-            scene.rootNode.addChildNode(frontLightNode)
-            scene.rootNode.addChildNode(backLightNode)
-        }
-
-        return ZStack {
-            // Background
+        ZStack {
             if isGIFViewVisible {
-                // GIFView 표시
                 GIFViewRepresentable(particleColor: UIColor(red: self.red, green: self.green, blue: self.blue, alpha: 1.0))
                     .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
                     .transition(.opacity)
+                    .animation(.easeOut(duration: 0.3))
             } else {
                 SceneView(scene: crackScene, options: [.autoenablesDefaultLighting, .allowsCameraControl])
                     .edgesIgnoringSafeArea(.all)
                     .frame(width: UIScreen.main.bounds.width*2.5, height: UIScreen.main.bounds.height*2.5)
                     .position(x: UIScreen.main.bounds.width/3, y: UIScreen.main.bounds.height/3)
-                // default 상태가 움직이도록
                     .onAppear {
-                        musicRollingBall()
-
-                        let headRotationAction = SCNAction.repeatForever(SCNAction.rotate(by: .pi*1, around: SCNVector3(1, 0, 0), duration: 5))
-                        self.glassHead?.rootNode.runAction(headRotationAction)
-                        let crackRotationAction = SCNAction.repeatForever(SCNAction.rotate(by: .pi*1, around: SCNVector3(-1, 0, 0), duration: 12))
-                        self.crackScene?.rootNode.runAction(crackRotationAction)
-                        changeAnimation(0.5, 0.5, 0.5)
-
-                        getRealtimeDatabase()
+                        setupScene()
                     }
                     .onDisappear {
                         stopMusic()
@@ -146,45 +117,19 @@ struct TestModelUIkit: View {
                     .gesture(
                         DragGesture()
                             .onChanged { change in
-                                self.timer?.invalidate()
-                                self.timer = Timer.scheduledTimer(withTimeInterval: 8.0, repeats: true) { _ in
-                                    print("no event")
-                                    let headRotationAction = SCNAction.repeatForever(SCNAction.rotate(by: .pi*1, around: SCNVector3(1, 0, 0), duration: 5))
-                                    self.glassHead?.rootNode.runAction(headRotationAction)
-                                    let crackRotationAction = SCNAction.repeatForever(SCNAction.rotate(by: .pi*1, around: SCNVector3(-1, 0, 0), duration: 12))
-                                    self.crackScene?.rootNode.runAction(crackRotationAction)
-                                    changeAnimation(0.5, 0.5, 0.5)
-                                }
-                                musicRollingBall()
-                                if change.translation.height > 0 {
-                                    upRotation()
-                                } else if change.translation.height < 0 {
-                                    downRotation()
-                                } else if change.translation.width > 0 {
-                                    rightRotation()
-                                } else if change.translation.width < 0 {
-                                    leftRotation()
-                                }
-
-                                if self.rotationDuration <= 10.0 {
-                                    print("=== The End TouchEvent===")
-                                    changeView()
-                                }
+                                handleDragChange(change: change)
                             }
                             .onEnded { _ in
-                                // 사용자가 드래그를 끝내면 타이머를 초기화
-                                self.timer?.invalidate()
-                                self.timer = nil
+                                handleDragEnd()
                             }
                     )
-
-                // Front
-                if isSceneViewVisible {
-                    SceneViewRepresentable(scene: glassHead, allowsCameraControl: true)
-                        .frame(width: UIScreen.main.bounds.width / 4, height: UIScreen.main.bounds.height / 4)
-                }
+            }
+            if isSceneViewVisible && !isGIFViewVisible {
+                SceneViewRepresentable(scene: glassHead, allowsCameraControl: true)
+                    .frame(width: UIScreen.main.bounds.width / 4, height: UIScreen.main.bounds.height / 4)
             }
         }
+        .animation(.easeOut(duration: 0.3), value: isGIFViewVisible)
     }
 
     // RealtimeDatabas 값 받아오는 함수
@@ -229,11 +174,72 @@ struct TestModelUIkit: View {
         }
     }
 
+    // 모든 초기 설정을 처리하는 함수
+    private func setupScene() {
+        // 음악 재생 및 초기 애니메이션 적용
+        musicRollingBall()
+        applyInitialAnimations()
+    }
+
+    // 초기 애니메이션 적용
+    private func applyInitialAnimations() {
+        // 초기 애니메이션 적용 로직
+        if let glassHeadScene = self.glassHead {
+            let headRotationAction = SCNAction.repeatForever(SCNAction.rotate(by: .pi, around: SCNVector3(1, 0, 0), duration: rotationDuration))
+            glassHeadScene.rootNode.runAction(headRotationAction)
+        }
+
+        if let crackScene = self.crackScene {
+            let crackRotationAction = SCNAction.repeatForever(SCNAction.rotate(by: .pi, around: SCNVector3(-1, 0, 0), duration: rotationDuration * 2))
+            crackScene.rootNode.runAction(crackRotationAction)
+        }
+
+        changeAnimation(0.5, 0.5, 0.5)
+    }
+
+    // 드래그 이벤트 핸들링
+    private func handleDragChange(change: DragGesture.Value) {
+        // 사용자가 드래그를 시작하면, 드래그의 방향과 거리에 따라 애니메이션을 조정합니다.
+        self.timer?.invalidate()
+        self.timer = Timer.scheduledTimer(withTimeInterval: 8.0, repeats: true) { _ in
+            print("no event")
+            let headRotationAction = SCNAction.repeatForever(SCNAction.rotate(by: .pi*1, around: SCNVector3(1, 0, 0), duration: 5))
+            self.glassHead?.rootNode.runAction(headRotationAction)
+            let crackRotationAction = SCNAction.repeatForever(SCNAction.rotate(by: .pi*1, around: SCNVector3(-1, 0, 0), duration: 12))
+            self.crackScene?.rootNode.runAction(crackRotationAction)
+            changeAnimation(0.5, 0.5, 0.5)
+        }
+
+        musicRollingBall()
+
+        if change.translation.height > 0 {
+            upRotation()
+        } else if change.translation.height < 0 {
+            downRotation()
+        } else if change.translation.width > 0 {
+            rightRotation()
+        } else if change.translation.width < 0 {
+            leftRotation()
+        }
+
+        if self.rotationDuration <= 10.0 {
+            print("=== The End TouchEvent===")
+            changeView()
+        }
+    }
+
+    private func handleDragEnd() {
+        // 사용자가 드래그를 끝내면, 필요한 경우 타이머를 초기화하거나, 애니메이션을 정지합니다.
+        self.timer?.invalidate()
+        self.timer = nil
+        print("Drag ended.")
+    }
+
     // 위로 움직임
     func upRotation() {
         self.rotationDuration += 5
-        let rotationAction = SCNAction.rotate(by: .pi*2, around: SCNVector3(-1, 0, 0), duration: self.rotationDuration)
-        let rotationAction2 = SCNAction.rotate(by: .pi*2, around: SCNVector3(1, 0, 0), duration: self.rotationDuration-6)
+        let rotationAction = SCNAction.rotate(by: .pi*6, around: SCNVector3(-1, 0, 0), duration: self.rotationDuration)
+        let rotationAction2 = SCNAction.rotate(by: .pi*6, around: SCNVector3(1, 0, 0), duration: self.rotationDuration-6)
         // -1,0,0
         changeAnimation(0.5, 0.5, 1.0)
         glassHead?.rootNode.removeAllActions()
