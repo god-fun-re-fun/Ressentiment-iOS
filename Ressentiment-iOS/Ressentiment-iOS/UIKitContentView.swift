@@ -78,7 +78,7 @@ struct TestModelUIkit: View {
     @State var crackScene = SCNScene(named: "Concrete-Smooth.usdz")
 
     @State private var timer: Timer? = nil
-    @State var velocity: CGFloat = 40
+    @State var velocity: CGFloat = 25
     @Binding var rotationDuration: TimeInterval
 
     @State var red: CGFloat = 0.5
@@ -86,7 +86,7 @@ struct TestModelUIkit: View {
     @State var blue: CGFloat = 0.5
     let alpha: CGFloat = 1.0
 
-    @State var endPoint = 150
+    @State var endPoint = 100
 
     @Environment(\.presentationMode) var presentationMode
 
@@ -249,7 +249,7 @@ struct TestModelUIkit: View {
         let rotationAction = SCNAction.rotate(by: .pi*6, around: SCNVector3(-1, 0, 0), duration: self.rotationDuration)
         let rotationAction2 = SCNAction.rotate(by: .pi*6, around: SCNVector3(1, 0, 0), duration: self.rotationDuration-6)
         // -1,0,0
-        changeAnimation(0.15, 0.87, 1.0)
+        changeAnimation(0.16, 0.52, 0.95)
         glassHead?.rootNode.removeAllActions()
         crackScene?.rootNode.removeAllActions()
         glassHead?.rootNode.runAction(rotationAction)
@@ -267,10 +267,10 @@ struct TestModelUIkit: View {
         self.endPoint -= Int(rotationDuration)/7
         if (red <= 0.8) {
             print("===== red 긍정 ")
-            changeAnimation(1.0, 0.4, 0.55)
+            changeAnimation(0.99, 0.3, 0.31)
         } else {
             print("===== red 부정 ")
-            changeAnimation(0.86, 0.04, 0.17)
+            changeAnimation(0.83, 0.08, 0.09)
         }
         let rotationAction = SCNAction.rotate(by: .pi*10, around: SCNVector3(1, 0, 0), duration: self.rotationDuration)
         let rotationAction2 = SCNAction.rotate(by: .pi*10, around: SCNVector3(-1, 0, 0), duration: self.rotationDuration-6)
@@ -285,7 +285,7 @@ struct TestModelUIkit: View {
     func rightRotation() {
         print("➡️")
         self.endPoint -= Int(rotationDuration)/7
-        changeAnimation(0.71, 0.94, 0.17)
+        changeAnimation(0.55, 0.92, 0.37)
         let rotationAction = SCNAction.rotate(by: .pi*8, around: SCNVector3(0, -1, 0), duration: self.rotationDuration)
         let rotationAction2 = SCNAction.rotate(by: .pi*8, around: SCNVector3(0, -1, 0), duration: self.rotationDuration)
         glassHead?.rootNode.removeAllActions()

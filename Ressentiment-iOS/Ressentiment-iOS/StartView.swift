@@ -27,9 +27,9 @@ struct StartView: View {
                 Image("StartButton")
                     .resizable() // 이미지 크기 조절 가능하게 설정
                     .aspectRatio(contentMode: .fit) // 이미지 비율 유지
-                    .frame(width: 300, height: 70) // 버튼 크기 조정
+                    .frame(width: 800, height: 181) // 버튼 크기 조정
             })
-            .padding(.top, 700) // 버튼 위치 조정 (아래로 내림)
+            .padding(.top, 840) // 버튼 위치 조정 (아래로 내림)
             .fullScreenCover(isPresented: $isButtonPressed, content: {
                 // isButtonPressed가 true일 때 보여질 뷰
                 MainView()
