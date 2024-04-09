@@ -11,9 +11,7 @@ import SwiftUI
 import AVFoundation
 import SceneKit
 
-import Firebase
-import FirebaseDatabaseSwift
-import FirebaseDatabaseInternal
+import CocoaMQTT
 
 class SceneViewController: UIViewController {
     var scene: SCNScene?
@@ -80,7 +78,7 @@ struct TestModelUIkit: View {
     @State var crackScene = SCNScene(named: "Concrete-Smooth.usdz")
 
     @State private var timer: Timer? = nil
-    @State var velocity: CGFloat = 30
+    @State var velocity: CGFloat = 40
     @Binding var rotationDuration: TimeInterval
 
     @State var red: CGFloat = 0.5
@@ -88,17 +86,16 @@ struct TestModelUIkit: View {
     @State var blue: CGFloat = 0.5
     let alpha: CGFloat = 1.0
 
-    @State var endPoint = 100
-    
-    @Environment(\.presentationMode) var presentationMode
+    @State var endPoint = 150
 
-    // DatabaseReference 인스턴스 생성 및 Firebase Database의 루트 참조를 초기화
-    var ref: DatabaseReference? = Database.database().reference()
+    @Environment(\.presentationMode) var presentationMode
 
     @State private var isSceneViewVisible = true
     @State private var isGIFViewVisible = false
 
     @State var audioPlayer: AVAudioPlayer?
+
+    @ObservedObject var mqttManager = MQTTManager()
 
     var body: some View {
         ZStack {
@@ -118,9 +115,34 @@ struct TestModelUIkit: View {
                     .position(x: UIScreen.main.bounds.width/3, y: UIScreen.main.bounds.height/3)
                     .onAppear {
                         setupScene()
+                        let headRotationAction = SCNAction.repeatForever(SCNAction.rotate(by: .pi*10, around: SCNVector3(1, 0, 0), duration:  self.rotationDuration))
+                        self.glassHead?.rootNode.runAction(headRotationAction)
+                        let crackRotationAction = SCNAction.repeatForever(SCNAction.rotate(by: .pi*10, around: SCNVector3(-1, 0, 0), duration:  self.rotationDuration-6))
+                        self.crackScene?.rootNode.runAction(crackRotationAction)
+                        changeAnimation(0.5, 0.5, 0.5)
                     }
                     .onDisappear {
                         stopMusic()
+                    }
+                    .onReceive(mqttManager.$receivedMessage) { newValue in
+                        // 여기에 receivedMessage가 변경될 때마다 실행하고 싶은 코드를 작성합니다.
+                        // 예를 들어, 콘솔에 변경된 메시지를 출력합니다.
+                        print("==== Here: \(newValue)")
+
+                        if (newValue) == "up" {
+                            upRotation()
+                        } else if (newValue) == "down" {
+                            downRotation()
+                        } else if (newValue) == "left" {
+                            leftRotation()
+                        } else if (newValue) == "right" {
+                            rightRotation()
+                        }
+
+                        if endPoint <= 1 {
+                            print("=== The End Arduino===")
+                            changeView()
+                        }
                     }
                     .gesture(
                         DragGesture()
@@ -143,68 +165,42 @@ struct TestModelUIkit: View {
     // 모든 초기 설정을 처리하는 함수
     private func setupScene() {
         // 음악 재생 및 초기 애니메이션 적용
-        musicRollingBall()
+        // musicRollingBall()
         applyInitialAnimations()
-        getRealtimeDatabase()
+        // receivedMessage(receivedMessage: mqttManager.receivedMessage)
     }
 
     // 초기 애니메이션 적용
     private func applyInitialAnimations() {
         // 초기 애니메이션 적용 로직
         if let glassHeadScene = self.glassHead {
-            let headRotationAction = SCNAction.repeatForever(SCNAction.rotate(by: .pi, around: SCNVector3(1, 0, 0), duration: rotationDuration))
+            let headRotationAction = SCNAction.repeatForever(SCNAction.rotate(by: .pi*2, around: SCNVector3(1, 0, 0), duration: 8.0))
             glassHeadScene.rootNode.runAction(headRotationAction)
         }
 
         if let crackScene = self.crackScene {
-            let crackRotationAction = SCNAction.repeatForever(SCNAction.rotate(by: .pi, around: SCNVector3(-1, 0, 0), duration: rotationDuration * 2))
+            let crackRotationAction = SCNAction.repeatForever(SCNAction.rotate(by: .pi*2, around: SCNVector3(-1, 0, 0), duration: 15.0))
             crackScene.rootNode.runAction(crackRotationAction)
         }
 
         changeAnimation(0.5, 0.5, 0.5)
     }
 
-    // RealtimeDatabas 값 받아오는 함수
-    func getRealtimeDatabase() {
-        // "sensor" 경로의 데이터에 대한 실시간 업데이트를 관찰
-        ref?.child("sensor").observe(.value, with: { snapshot in
-            // snapshot이 감지되면 여기의 코드가 실행됩니다.
-            // snapshot.value를 통해 데이터를 가져올 수 있습니다.
-            guard let value = snapshot.value as? [String: Any] else {
-                print("데이터를 가져오는 데 실패했습니다.")
-                return
-            }
-
-            let fixPitch = -32
-            let fixRoll = 39
-
-            // x, y, z 값을 읽어옵니다.
-            if let pitch = value["pitch"] as? Int,
-               let roll = value["roll"] as? Int {
-                print("pitch: \(pitch), roll: \(roll)")
-
-
-                if fixRoll - roll < -3{
-                    downRotation()
-                } else if fixRoll - roll > 2 {
-                    upRotation()
-                } else if fixPitch - pitch > 3 {
-                    leftRotation()
-                } else if fixPitch - pitch < -2 {
-                    rightRotation()
-                }
-
-                if endPoint <= 1 {
-                    print("=== The End Arduino===")
-                    changeView()
-                }
-            } else {
-                print("올바른 데이터 형식이 아닙니다.")
-            }
-        }) { error in
-            print(error.localizedDescription)
-        }
-    }
+    // MQTT 통신
+//
+//    func receivedMessage(receivedMessage: String) {
+//        print("==== Here: \(mqttManager.receivedMessage)")
+//
+//        if (mqttManager.receivedMessage) == "up" {
+//            upRotation()
+//        } else if (mqttManager.receivedMessage) == "down" {
+//            downRotation()
+//        } else if (mqttManager.receivedMessage) == "left" {
+//            leftRotation()
+//        } else if (mqttManager.receivedMessage) == "right" {
+//            rightRotation()
+//        }
+//    }
 
     // 드래그 이벤트 핸들링
     private func handleDragChange(change: DragGesture.Value) {
@@ -212,14 +208,14 @@ struct TestModelUIkit: View {
         self.timer?.invalidate()
         self.timer = Timer.scheduledTimer(withTimeInterval: 8.0, repeats: true) { _ in
             print("no event")
-            let headRotationAction = SCNAction.repeatForever(SCNAction.rotate(by: .pi*1, around: SCNVector3(1, 0, 0), duration: 5))
+            let headRotationAction = SCNAction.repeatForever(SCNAction.rotate(by: .pi*10, around: SCNVector3(1, 0, 0), duration:  self.rotationDuration))
             self.glassHead?.rootNode.runAction(headRotationAction)
-            let crackRotationAction = SCNAction.repeatForever(SCNAction.rotate(by: .pi*1, around: SCNVector3(-1, 0, 0), duration: 12))
+            let crackRotationAction = SCNAction.repeatForever(SCNAction.rotate(by: .pi*10, around: SCNVector3(-1, 0, 0), duration:  self.rotationDuration-6))
             self.crackScene?.rootNode.runAction(crackRotationAction)
             changeAnimation(0.5, 0.5, 0.5)
         }
 
-        musicRollingBall()
+        // musicRollingBall()
 
         if change.translation.height > 0 {
             upRotation()
@@ -261,8 +257,6 @@ struct TestModelUIkit: View {
         print("⬆️: \(self.rotationDuration)")
     }
 
-    @State var downCount: Int = 0
-
     // 아래 움직임
     func downRotation() {
         if self.rotationDuration <= 7{
@@ -271,11 +265,12 @@ struct TestModelUIkit: View {
             self.rotationDuration -= 5
         }
         self.endPoint -= Int(rotationDuration)/7
-        self.downCount += 1
-        if (downCount > 8) {
-            changeAnimation(0.86, 0.04, 0.17)
-        } else {
+        if (red <= 0.8) {
+            print("===== red 긍정 ")
             changeAnimation(1.0, 0.4, 0.55)
+        } else {
+            print("===== red 부정 ")
+            changeAnimation(0.86, 0.04, 0.17)
         }
         let rotationAction = SCNAction.rotate(by: .pi*10, around: SCNVector3(1, 0, 0), duration: self.rotationDuration)
         let rotationAction2 = SCNAction.rotate(by: .pi*10, around: SCNVector3(-1, 0, 0), duration: self.rotationDuration-6)
@@ -320,7 +315,6 @@ struct TestModelUIkit: View {
             isGIFViewVisible = true
         }
         // isSceneViewVisible = false
-        self.rotationDuration = 30.0
         stopMusic()
         RessentimentService().postColor(parameters: ["R":"\(self.red)", "G":"\(self.green)", "B":"\(self.blue)"]) { result in
             switch result {
@@ -330,6 +324,8 @@ struct TestModelUIkit: View {
                 print("API Error: \(error)")
             }
         }
+        self.rotationDuration = 30.0
+        self.endPoint = 100
     }
 
     // 음악 Play 함수
@@ -372,11 +368,11 @@ struct TestModelUIkit: View {
     // 색상 변경 함수
     func changeColor(_ goalRed: CGFloat, _ goalGreen: CGFloat, _ goalBlue: CGFloat) -> UIColor {
         // print("=== color change func 🎨 ===")
-        let newRed = self.red + (goalRed - self.red)/(velocity/2)
+        let newRed = self.red + (goalRed - self.red)/velocity
         self.red = newRed
-        let newGreen = self.green + (goalGreen - self.green)/(velocity/2)
+        let newGreen = self.green + (goalGreen - self.green)/velocity
         self.green = newGreen
-        let newBlue = self.blue + (goalBlue - self.blue)/(velocity/2)
+        let newBlue = self.blue + (goalBlue - self.blue)/velocity
         self.blue = newBlue
 
         // print("🌀🌀newBlue: \(self.blue)")

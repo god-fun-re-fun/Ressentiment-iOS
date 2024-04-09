@@ -31,6 +31,9 @@
 		028750BD2BB291A000D003E9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 028750BC2BB291A000D003E9 /* GoogleService-Info.plist */; };
 		028750CA2BB2995B00D003E9 /* XYZResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028750C92BB2995B00D003E9 /* XYZResponse.swift */; };
 		0299FFBF2BC27D2B00D9F45B /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 0299FFBE2BC27D2B00D9F45B /* SnapKit */; };
+		0299FFC12BC4169B00D9F45B /* FireBaseContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0299FFC02BC4169B00D9F45B /* FireBaseContentView.swift */; };
+		0299FFC42BC4171A00D9F45B /* CocoaMQTT in Frameworks */ = {isa = PBXBuildFile; productRef = 0299FFC32BC4171A00D9F45B /* CocoaMQTT */; };
+		0299FFC82BC41B4200D9F45B /* MQTTManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0299FFC72BC41B4200D9F45B /* MQTTManager.swift */; };
 		02D2DBB22BB6A9E2005069B5 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 02D2DBB12BB6A9E2005069B5 /* FirebaseAnalytics */; };
 		02D2DBB42BB6A9E2005069B5 /* FirebaseAnalyticsOnDeviceConversion in Frameworks */ = {isa = PBXBuildFile; productRef = 02D2DBB32BB6A9E2005069B5 /* FirebaseAnalyticsOnDeviceConversion */; };
 		02D2DBB62BB6A9E2005069B5 /* FirebaseAnalyticsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 02D2DBB52BB6A9E2005069B5 /* FirebaseAnalyticsSwift */; };
@@ -72,6 +75,8 @@
 		027A2DF92B997860008E662B /* testvideo.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = testvideo.gif; sourceTree = "<group>"; };
 		028750BC2BB291A000D003E9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		028750C92BB2995B00D003E9 /* XYZResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XYZResponse.swift; sourceTree = "<group>"; };
+		0299FFC02BC4169B00D9F45B /* FireBaseContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireBaseContentView.swift; sourceTree = "<group>"; };
+		0299FFC72BC41B4200D9F45B /* MQTTManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MQTTManager.swift; sourceTree = "<group>"; };
 		02E870132B95B4F900DD4B38 /* Concrete-Smooth.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = "Concrete-Smooth.usdz"; sourceTree = "<group>"; };
 		02E870142B95B4F900DD4B38 /* GlassHead.scn */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = GlassHead.scn; sourceTree = "<group>"; };
 		02E870172B95B50500DD4B38 /* color_3.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = color_3.jpeg; sourceTree = "<group>"; };
@@ -96,6 +101,7 @@
 				02D2DBB22BB6A9E2005069B5 /* FirebaseAnalytics in Frameworks */,
 				02D2DBB42BB6A9E2005069B5 /* FirebaseAnalyticsOnDeviceConversion in Frameworks */,
 				02D2DBBA2BB6A9E2005069B5 /* FirebaseAppCheck in Frameworks */,
+				0299FFC42BC4171A00D9F45B /* CocoaMQTT in Frameworks */,
 				02D2DBB82BB6A9E2005069B5 /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -144,6 +150,8 @@
 				021F2E1F2B95A8BE00D13367 /* Texture */,
 				021F2E112B95A8A500D13367 /* Ressentiment_iOSApp.swift */,
 				02EF173E2BA972C1002871CE /* UIKitContentView.swift */,
+				0299FFC72BC41B4200D9F45B /* MQTTManager.swift */,
+				0299FFC02BC4169B00D9F45B /* FireBaseContentView.swift */,
 				02EF17612BAABA53002871CE /* GlassHeadManager.swift */,
 				023019022BA7F13300B6996F /* UIImage+.swift */,
 				022564992BBAA682006D4AD3 /* GIFViewController.swift */,
@@ -239,6 +247,7 @@
 				02313FD62BB6AC31002CA66A /* FirebaseDatabase */,
 				02313FD82BB6AC36002CA66A /* FirebaseDatabaseSwift */,
 				0299FFBE2BC27D2B00D9F45B /* SnapKit */,
+				0299FFC32BC4171A00D9F45B /* CocoaMQTT */,
 			);
 			productName = "Ressentiment-iOS";
 			productReference = 021F2E0E2B95A8A500D13367 /* Ressentiment-iOS.app */;
@@ -271,6 +280,7 @@
 			packageReferences = (
 				02D2DBB02BB6A9E2005069B5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				0299FFBD2BC27D2B00D9F45B /* XCRemoteSwiftPackageReference "SnapKit" */,
+				0299FFC22BC4171900D9F45B /* XCRemoteSwiftPackageReference "CocoaMQTT" */,
 			);
 			productRefGroup = 021F2E0F2B95A8A500D13367 /* Products */;
 			projectDirPath = "";
@@ -318,7 +328,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				028750CA2BB2995B00D003E9 /* XYZResponse.swift in Sources */,
+				0299FFC82BC41B4200D9F45B /* MQTTManager.swift in Sources */,
 				02EF17622BAABA53002871CE /* GlassHeadManager.swift in Sources */,
+				0299FFC12BC4169B00D9F45B /* FireBaseContentView.swift in Sources */,
 				022DD7882B9DF09C006F53A6 /* ColorResponse.swift in Sources */,
 				023019032BA7F13300B6996F /* UIImage+.swift in Sources */,
 				020DB8092BC120D5008872FD /* StartView.swift in Sources */,
@@ -544,6 +556,14 @@
 				minimumVersion = 5.7.1;
 			};
 		};
+		0299FFC22BC4171900D9F45B /* XCRemoteSwiftPackageReference "CocoaMQTT" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/emqx/CocoaMQTT.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.1.8;
+			};
+		};
 		02D2DBB02BB6A9E2005069B5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
@@ -569,6 +589,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 0299FFBD2BC27D2B00D9F45B /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
+		};
+		0299FFC32BC4171A00D9F45B /* CocoaMQTT */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0299FFC22BC4171900D9F45B /* XCRemoteSwiftPackageReference "CocoaMQTT" */;
+			productName = CocoaMQTT;
 		};
 		02D2DBB12BB6A9E2005069B5 /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
