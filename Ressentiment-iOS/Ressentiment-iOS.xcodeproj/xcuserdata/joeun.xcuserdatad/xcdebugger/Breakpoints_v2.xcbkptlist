@@ -14,8 +14,8 @@
             filePath = "Ressentiment-iOS/UIKitContentView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "371"
-            endingLineNumber = "371"
+            startingLineNumber = "398"
+            endingLineNumber = "398"
             landmarkName = "changeColor(_:_:_:)"
             landmarkType = "7">
             <Locations>
@@ -78,8 +78,8 @@
             filePath = "Ressentiment-iOS/UIKitContentView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "273"
-            endingLineNumber = "273"
+            startingLineNumber = "288"
+            endingLineNumber = "288"
             landmarkName = "TestModelUIkit"
             landmarkType = "14">
          </BreakpointContent>
@@ -94,8 +94,8 @@
             filePath = "Ressentiment-iOS/UIKitContentView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "296"
-            endingLineNumber = "296"
+            startingLineNumber = "311"
+            endingLineNumber = "311"
             landmarkName = "rightRotation()"
             landmarkType = "7">
          </BreakpointContent>
