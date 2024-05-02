@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		020B4F692BE0B8A9003BC2FC /* ReadyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020B4F682BE0B8A9003BC2FC /* ReadyView.swift */; };
+		020B4F6B2BE0B8B1003BC2FC /* ReadyView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020B4F6A2BE0B8B1003BC2FC /* ReadyView2.swift */; };
 		020DB8092BC120D5008872FD /* StartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020DB8082BC120D5008872FD /* StartView.swift */; };
 		020DB80C2BC123D5008872FD /* rollingBall.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 020DB80B2BC123D5008872FD /* rollingBall.mp3 */; };
 		020DB80E2BC12C40008872FD /* glassHit.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 020DB80D2BC12C40008872FD /* glassHit.mp3 */; };
@@ -52,6 +54,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		020B4F682BE0B8A9003BC2FC /* ReadyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadyView.swift; sourceTree = "<group>"; };
+		020B4F6A2BE0B8B1003BC2FC /* ReadyView2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadyView2.swift; sourceTree = "<group>"; };
 		020DB8082BC120D5008872FD /* StartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartView.swift; sourceTree = "<group>"; };
 		020DB80B2BC123D5008872FD /* rollingBall.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = rollingBall.mp3; sourceTree = "<group>"; };
 		020DB80D2BC12C40008872FD /* glassHit.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = glassHit.mp3; sourceTree = "<group>"; };
@@ -156,6 +160,8 @@
 				023019022BA7F13300B6996F /* UIImage+.swift */,
 				022564992BBAA682006D4AD3 /* GIFViewController.swift */,
 				020DB8082BC120D5008872FD /* StartView.swift */,
+				020B4F682BE0B8A9003BC2FC /* ReadyView.swift */,
+				020B4F6A2BE0B8B1003BC2FC /* ReadyView2.swift */,
 				021F2E152B95A8A600D13367 /* Assets.xcassets */,
 				020DB80D2BC12C40008872FD /* glassHit.mp3 */,
 				020DB80B2BC123D5008872FD /* rollingBall.mp3 */,
@@ -329,8 +335,10 @@
 			files = (
 				028750CA2BB2995B00D003E9 /* XYZResponse.swift in Sources */,
 				0299FFC82BC41B4200D9F45B /* MQTTManager.swift in Sources */,
+				020B4F692BE0B8A9003BC2FC /* ReadyView.swift in Sources */,
 				02EF17622BAABA53002871CE /* GlassHeadManager.swift in Sources */,
 				0299FFC12BC4169B00D9F45B /* FireBaseContentView.swift in Sources */,
+				020B4F6B2BE0B8B1003BC2FC /* ReadyView2.swift in Sources */,
 				022DD7882B9DF09C006F53A6 /* ColorResponse.swift in Sources */,
 				023019032BA7F13300B6996F /* UIImage+.swift in Sources */,
 				020DB8092BC120D5008872FD /* StartView.swift in Sources */,
