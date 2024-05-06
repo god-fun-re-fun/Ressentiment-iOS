@@ -203,6 +203,14 @@ struct TestModelUIkit: View {
             rightRotation()
         } else if (mqttManager.receivedMessage) == "right" {
             leftRotation()
+        } else if (mqttManager.receivedMessage) == "up-right" {
+            upRightRotation()
+        } else if (mqttManager.receivedMessage) == "up-left" {
+            upLeftRotation()
+        } else if (mqttManager.receivedMessage) == "down-right" {
+            downRightRotation()
+        } else if (mqttManager.receivedMessage) == "down-left" {
+            downLeftRotation()
         }
 
         print("==== endPoint: \(self.endPoint)")
@@ -344,16 +352,16 @@ struct TestModelUIkit: View {
 
     // MARK: - 대각선 움직임
     func upLeftRotation() {
-        rotationAction(glassVector: SCNVector3(-1, 1, 0), headVector: SCNVector3(1, -1, 0))
-    }
-    func upRightRotation() {
         rotationAction(glassVector: SCNVector3(-1, -1, 0), headVector: SCNVector3(1, 1, 0))
     }
+    func upRightRotation() {
+        rotationAction(glassVector: SCNVector3(-1, 1, 0), headVector: SCNVector3(1, -1, 0))
+    }
     func downLeftRotation() {
-        rotationAction(glassVector: SCNVector3(1, 1, 0), headVector: SCNVector3(-1, -1, 0))
+        rotationAction(glassVector: SCNVector3(1, -1, 0), headVector: SCNVector3(-1, 1, 0))
     }
     func downRightRotation() {
-        rotationAction(glassVector: SCNVector3(1, -1, 0), headVector: SCNVector3(-1, 1, 0))
+        rotationAction(glassVector: SCNVector3(1, 1, 0), headVector: SCNVector3(-1, -1, 0))
     }
 
     // view 전환 및 api post
