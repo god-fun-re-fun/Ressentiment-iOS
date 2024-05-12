@@ -101,71 +101,81 @@ struct TestModelUIkit: View {
     @State var beta: CGFloat = 100
     @State var gamma: Int = 1
 
+    @StateObject var navigationStackManager = NavigationStackManager()
+
     var body: some View {
-        ZStack {
-            if isGIFViewVisible {
-                GIFViewRepresentable(particleColor: UIColor(red: self.red, green: self.green, blue: self.blue, alpha: 1.0))
-                    .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
-                    .transition(.opacity)
-                    .animation(.easeOut(duration: 0.3))
-                    .onTapGesture {
-                        // 현재 뷰 닫기
-                        presentationMode.wrappedValue.dismiss()
-                    }
-                    .onDisappear {
-                        stopMusic()
-                        timeStop()
-                    }
+        NavigationStack {
+            if navigationStackManager.isAtRootView {
+                StartView()
             } else {
-                SceneView(scene: crackScene, options: [.autoenablesDefaultLighting, .allowsCameraControl])
-                    .edgesIgnoringSafeArea(.all)
-                    .frame(width: UIScreen.main.bounds.width*2.5, height: UIScreen.main.bounds.height*2.5)
-                    .position(x: UIScreen.main.bounds.width/3, y: UIScreen.main.bounds.height/3)
-                    .onAppear {
-                        setupScene()
-                    }
-                    .onDisappear {
-                        stopMusic()
-                        timeStop()
-                    }
-                    .onReceive(mqttManager.$receivedMessage) { newValue in
-                        // 여기에 receivedMessage가 변경될 때마다 실행하고 싶은 코드를 작성합니다.
-                        // 예를 들어, 콘솔에 변경된 메시지를 출력합니다.
-                        print("==== Here: \(newValue)")
-
-                        self.timer?.invalidate()
-                        self.timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
-                            print("== no event 2 🫥 ==")
-                            rotationAction(glassVector: SCNVector3(1, 0, 0), headVector: SCNVector3(-1, 0, 0))
-
-                            changeAnimation(0.5, 0.5, 0.5)
-
-                            self.endPoint -= 1
-
-
-                            if endPoint <= 1 {
-                                print("=== The End handleDragChange===")
-                                changeView()
+                ZStack {
+                    if isGIFViewVisible {
+                        GIFViewRepresentable(particleColor: UIColor(red: self.red, green: self.green, blue: self.blue, alpha: 1.0))
+                            .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+                            .transition(.opacity)
+                            .animation(.easeOut(duration: 0.3))
+                            .onTapGesture {
+                                // 현재 뷰 닫기
+                                // presentationMode.wrappedValue.dismiss()
+                                navigationStackManager.isAtRootView = true
                             }
-                        }
-
-                        receivedMessage(receivedMessage: mqttManager.receivedMessage)
-                    }
-                    .gesture(
-                        DragGesture()
-                            .onChanged { change in
-                                handleDragChange(change: change)
-
-                                print("==== 🔊 Duration: \(self.rotationDuration)")
+                            .onDisappear {
+                                stopMusic()
+                                timeStop()
                             }
-                    )
-            }
-            if isSceneViewVisible && !isGIFViewVisible {
-                SceneViewRepresentable(scene: glassHead, allowsCameraControl: true)
-                    .frame(width: UIScreen.main.bounds.width / 4, height: UIScreen.main.bounds.height / 4)
+                    } else {
+                        SceneView(scene: crackScene, options: [.autoenablesDefaultLighting, .allowsCameraControl])
+                            .edgesIgnoringSafeArea(.all)
+                            .frame(width: UIScreen.main.bounds.width*2.5, height: UIScreen.main.bounds.height*2.5)
+                            .position(x: UIScreen.main.bounds.width/3, y: UIScreen.main.bounds.height/3)
+                            .onAppear {
+                                setupScene()
+                            }
+                            .onDisappear {
+                                stopMusic()
+                                timeStop()
+                            }
+                            .onReceive(mqttManager.$receivedMessage) { newValue in
+                                // 여기에 receivedMessage가 변경될 때마다 실행하고 싶은 코드를 작성합니다.
+                                // 예를 들어, 콘솔에 변경된 메시지를 출력합니다.
+                                print("==== Here: \(newValue)")
+
+                                self.timer?.invalidate()
+                                self.timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
+                                    print("== no event 2 🫥 ==")
+                                    rotationAction(glassVector: SCNVector3(1, 0, 0), headVector: SCNVector3(-1, 0, 0))
+
+                                    changeAnimation(0.5, 0.5, 0.5)
+
+                                    self.endPoint -= 1
+
+
+                                    if endPoint <= 1 {
+                                        print("=== The End handleDragChange===")
+                                        changeView()
+                                    }
+                                }
+
+                                receivedMessage(receivedMessage: mqttManager.receivedMessage)
+                            }
+                            .gesture(
+                                DragGesture()
+                                    .onChanged { change in
+                                        handleDragChange(change: change)
+
+                                        print("==== 🔊 Duration: \(self.rotationDuration)")
+                                    }
+                            )
+                    }
+                    if isSceneViewVisible && !isGIFViewVisible {
+                        SceneViewRepresentable(scene: glassHead, allowsCameraControl: true)
+                            .frame(width: UIScreen.main.bounds.width / 4, height: UIScreen.main.bounds.height / 4)
+                    }
+                }
+                .animation(.easeOut(duration: 0.3), value: isGIFViewVisible)
             }
         }
-        .animation(.easeOut(duration: 0.3), value: isGIFViewVisible)
+        .environmentObject(navigationStackManager)
         .navigationBarBackButtonHidden(true)
     }
 
@@ -193,7 +203,6 @@ struct TestModelUIkit: View {
     }
 
     // MQTT 통신
-    //
     func receivedMessage(receivedMessage: String) {
         if (mqttManager.receivedMessage) == "up" {
             upRotation()
@@ -309,11 +318,13 @@ struct TestModelUIkit: View {
 
         rotationAction(glassVector: SCNVector3(1, 0, 0), headVector: SCNVector3(-1, 0, 0))
         if (red <= 0.8) {
-            print("===== red 긍정 ")
-            changeAnimation(0.99, 0.3, 0.31)
+            print("===== gray 긍정 ")
+            // UIColor(red: 0.92, green: 0.92, blue: 0.92, alpha: 1)
+            changeAnimation(0.92, 0.92, 0.92)
         } else {
-            print("===== red 부정 ")
-            changeAnimation(0.83, 0.08, 0.09)
+            print("===== gray 부정 ")
+            // UIColor(red: 0.68, green: 0.68, blue: 0.68, alpha: 1)
+            changeAnimation(0.68, 0.68, 0.68)
         }
 
         print("⬇️ veolocity: \(fixPI/self.rotationDuration)  | duration: \(self.rotationDuration)")

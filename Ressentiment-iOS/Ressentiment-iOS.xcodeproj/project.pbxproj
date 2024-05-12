@@ -50,7 +50,6 @@
 		02E870202B95B71600DD4B38 /* diffuse_0222.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 02E8701F2B95B71600DD4B38 /* diffuse_0222.jpeg */; };
 		02EF173F2BA972C1002871CE /* UIKitContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EF173E2BA972C1002871CE /* UIKitContentView.swift */; };
 		02EF17602BAAB51A002871CE /* crack3.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 02EF175F2BAAB51A002871CE /* crack3.jpeg */; };
-		02EF17622BAABA53002871CE /* GlassHeadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EF17612BAABA53002871CE /* GlassHeadManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -90,7 +89,6 @@
 		02E8701F2B95B71600DD4B38 /* diffuse_0222.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = diffuse_0222.jpeg; sourceTree = "<group>"; };
 		02EF173E2BA972C1002871CE /* UIKitContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitContentView.swift; sourceTree = "<group>"; };
 		02EF175F2BAAB51A002871CE /* crack3.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = crack3.jpeg; sourceTree = "<group>"; };
-		02EF17612BAABA53002871CE /* GlassHeadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassHeadManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -156,7 +154,6 @@
 				02EF173E2BA972C1002871CE /* UIKitContentView.swift */,
 				0299FFC72BC41B4200D9F45B /* MQTTManager.swift */,
 				0299FFC02BC4169B00D9F45B /* FireBaseContentView.swift */,
-				02EF17612BAABA53002871CE /* GlassHeadManager.swift */,
 				023019022BA7F13300B6996F /* UIImage+.swift */,
 				022564992BBAA682006D4AD3 /* GIFViewController.swift */,
 				020DB8082BC120D5008872FD /* StartView.swift */,
@@ -336,7 +333,6 @@
 				028750CA2BB2995B00D003E9 /* XYZResponse.swift in Sources */,
 				0299FFC82BC41B4200D9F45B /* MQTTManager.swift in Sources */,
 				020B4F692BE0B8A9003BC2FC /* ReadyView.swift in Sources */,
-				02EF17622BAABA53002871CE /* GlassHeadManager.swift in Sources */,
 				0299FFC12BC4169B00D9F45B /* FireBaseContentView.swift in Sources */,
 				020B4F6B2BE0B8B1003BC2FC /* ReadyView2.swift in Sources */,
 				022DD7882B9DF09C006F53A6 /* ColorResponse.swift in Sources */,

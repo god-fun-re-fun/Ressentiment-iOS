@@ -7,6 +7,10 @@
 
 import SwiftUI
 
+class NavigationStackManager: ObservableObject {
+    @Published var isAtRootView: Bool = false
+}
+
 // 첫 번째 화면
 struct StartView: View {
     @State private var isButtonPressed = false
