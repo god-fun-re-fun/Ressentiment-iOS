@@ -78,16 +78,14 @@ struct TestModelUIkit: View {
     @State var crackScene = SCNScene(named: "Concrete-Smooth.usdz")
 
     @State private var timer: Timer? = nil
-    @State var velocity: CGFloat = 25
+    @State var velocity: CGFloat = 20
     @Binding var rotationDuration: TimeInterval
-    @State var fixPI: CGFloat = .pi*10
+    @State var fixPI: CGFloat = .pi*8
 
     @State var red: CGFloat = 0.5
     @State var green: CGFloat = 0.5
     @State var blue: CGFloat = 0.5
     let alpha: CGFloat = 1.0
-
-    @Environment(\.presentationMode) var presentationMode
 
     @State private var isSceneViewVisible = true
     @State private var isGIFViewVisible = false
@@ -96,10 +94,15 @@ struct TestModelUIkit: View {
 
     @ObservedObject var mqttManager = MQTTManager()
 
-    @State var endPoint = 100
+    let endPoinValue = 90
+    @State var endPoint = 90
     @State var alphaa: CGFloat = 2
     @State var beta: CGFloat = 100
     @State var gamma: Int = 1
+
+    @State var redOnBlue: Bool = false
+    @State var redOnGreen: Bool = false
+    @State var redOnGray: Bool = false
 
     @StateObject var navigationStackManager = NavigationStackManager()
 
@@ -116,7 +119,6 @@ struct TestModelUIkit: View {
                             .animation(.easeOut(duration: 0.3))
                             .onTapGesture {
                                 // 현재 뷰 닫기
-                                // presentationMode.wrappedValue.dismiss()
                                 navigationStackManager.isAtRootView = true
                             }
                             .onDisappear {
@@ -136,19 +138,16 @@ struct TestModelUIkit: View {
                                 timeStop()
                             }
                             .onReceive(mqttManager.$receivedMessage) { newValue in
-                                // 여기에 receivedMessage가 변경될 때마다 실행하고 싶은 코드를 작성합니다.
-                                // 예를 들어, 콘솔에 변경된 메시지를 출력합니다.
-                                print("==== Here: \(newValue)")
+                                print("📢📢📢📢=== Here: \(newValue)")
 
                                 self.timer?.invalidate()
                                 self.timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
                                     print("== no event 2 🫥 ==")
                                     rotationAction(glassVector: SCNVector3(1, 0, 0), headVector: SCNVector3(-1, 0, 0))
 
-                                    changeAnimation(0.5, 0.5, 0.5)
+                                    changeAnimation(0.44, 0.44, 0.44)
 
                                     self.endPoint -= 1
-
 
                                     if endPoint <= 1 {
                                         print("=== The End handleDragChange===")
@@ -183,7 +182,7 @@ struct TestModelUIkit: View {
     private func setupScene() {
         // 음악 재생 및 초기 애니메이션 적용
         self.rotationDuration = 80.0
-        self.endPoint = 80
+        self.endPoint = endPoinValue
 
         musicRollingBall()
         applyInitialAnimations()
@@ -199,7 +198,7 @@ struct TestModelUIkit: View {
         crackScene?.rootNode.removeAllActions()
         glassHead?.rootNode.runAction(rotationAction)
         crackScene?.rootNode.runAction(rotationAction2)
-        changeAnimation(0.5, 0.5, 0.5)
+        changeAnimation(0.44, 0.44, 0.44)
     }
 
     // MQTT 통신
@@ -238,7 +237,7 @@ struct TestModelUIkit: View {
             print("== no event 1 🫥 ==")
             rotationAction(glassVector: SCNVector3(1, 0, 0), headVector: SCNVector3(-1, 0, 0))
 
-            changeAnimation(0.5, 0.5, 0.5)
+            changeAnimation(0.44, 0.44, 0.44)
 
             self.endPoint -= Int(beta/self.rotationDuration)
 
@@ -286,8 +285,8 @@ struct TestModelUIkit: View {
 
     // 위로 움직임
     func upRotation() {
-        if self.rotationDuration >= 100 {
-            self.rotationDuration = 100
+        if self.rotationDuration >= 80 {
+            self.rotationDuration = 80
         } else {
             self.rotationDuration += alphaa
         }
@@ -295,21 +294,30 @@ struct TestModelUIkit: View {
         self.endPoint -= Int(beta/self.rotationDuration) + Int(beta/self.rotationDuration)
 
         rotationAction(glassVector: SCNVector3(-1, 0, 0), headVector: SCNVector3(1, 0, 0))
-        if (blue <= 0.9) {
-            print("===== blue 긍정 ")
-            changeAnimation(0.16, 0.52, 0.95)
-        } else {
-            print("===== blue 부정 ")
-            changeAnimation(0.04, 0.12, 0.38)
+        print("===== blue ")
+        if (self.blue >= 0.9 && !self.redOnBlue) {
+            self.redOnBlue = true
+        } 
+        else if (self.redOnBlue && (self.red-self.blue) >= 0.1 ) {
+            self.redOnBlue = false
         }
 
-        print("⬆️ veolocity: \(fixPI/self.rotationDuration)  | duration: \(self.rotationDuration)")
+        if (self.redOnBlue) {
+            // UIColor(red: 1, green: 0.24, blue: 0.24, alpha: 1)
+            print("🔴 red 🔴")
+            changeAnimation(1, 0.24, 0.24)
+        } else {
+            print("🔵 blue 🔵")
+            changeAnimation(0.24, 0.47, 1)
+        }
+
+        print("⬆️ veolocity: \(fixPI/self.rotationDuration)")
     }
 
     // 아래 움직임
     func downRotation() {
-        if self.rotationDuration <= 9 {
-            self.rotationDuration = 9
+        if self.rotationDuration <= 10 {
+            self.rotationDuration = 10
         } else {
             self.rotationDuration -= alphaa
         }
@@ -317,17 +325,25 @@ struct TestModelUIkit: View {
         self.endPoint -= Int(beta/(self.rotationDuration))
 
         rotationAction(glassVector: SCNVector3(1, 0, 0), headVector: SCNVector3(-1, 0, 0))
-        if (red <= 0.8) {
-            print("===== gray 긍정 ")
-            // UIColor(red: 0.92, green: 0.92, blue: 0.92, alpha: 1)
-            changeAnimation(0.92, 0.92, 0.92)
-        } else {
-            print("===== gray 부정 ")
-            // UIColor(red: 0.68, green: 0.68, blue: 0.68, alpha: 1)
-            changeAnimation(0.68, 0.68, 0.68)
+
+        let averageColorValue = (self.red + self.green + self.blue) / 3
+
+        if (averageColorValue >= 0.61 && !self.redOnGray) {
+            self.redOnGray = true
+        } else if (self.redOnGray && (self.red-self.blue) >= 0.15 ) {
+            self.redOnGreen = false
         }
 
-        print("⬇️ veolocity: \(fixPI/self.rotationDuration)  | duration: \(self.rotationDuration)")
+        if (self.redOnGray) {
+            // UIColor(red: 1, green: 0.24, blue: 0.24, alpha: 1)
+            print("🔴 red 🔴")
+            changeAnimation(1, 0.24, 0.24)
+        } else {
+            print("🔘 gray 🔘")
+            changeAnimation(0.66, 0.66, 0.66)
+        }
+
+        print("⬇️ veolocity: \(fixPI/self.rotationDuration)")
     }
 
     // 오른쪽으로 움직임
@@ -335,15 +351,23 @@ struct TestModelUIkit: View {
         self.endPoint -= Int(beta/self.rotationDuration)
 
         rotationAction(glassVector: SCNVector3(0, -1, 0), headVector: SCNVector3(0, 1, 0))
-        if (green <= 0.85) {
-            print("===== green 긍정 ")
-            changeAnimation(0.55, 0.92, 0.37)
-        } else {
-            print("===== green 부정 ")
-            changeAnimation(0.24, 0.52, 0.23)
+        
+        if (self.green >= 0.9 && !self.redOnGreen) {
+            self.redOnGreen = true
+        } else if (self.redOnBlue && (self.red-self.green) >= 0.4 ) {
+            self.redOnGreen = false
         }
 
-        print("➡️")
+        if (self.redOnGreen) {
+            // UIColor(red: 1, green: 0.24, blue: 0.24, alpha: 1)
+            print("🔴 red 🔴")
+            changeAnimation(1, 0.24, 0.24)
+        } else {
+            print("🟢 green 🟢")
+            changeAnimation(0.24, 1, 0.24)
+        }
+
+        print("➡️ veolocity: \(fixPI/self.rotationDuration)")
     }
 
     // 왼쪽으로 움직임
@@ -351,13 +375,8 @@ struct TestModelUIkit: View {
         self.endPoint -= Int(beta/self.rotationDuration)
 
         rotationAction(glassVector: SCNVector3(0, 1, 0), headVector: SCNVector3(0, -1, 0))
-        if (green <= 0.85) {
-            print("===== green 긍정 ")
-            changeAnimation(0.55, 0.92, 0.37)
-        } else {
-            print("===== green 부정 ")
-            changeAnimation(0.24, 0.52, 0.23)
-        }
+        print("===== green ")
+        changeAnimation(0.24, 1, 0.24)
         print("⬅️")
     }
 
@@ -378,7 +397,7 @@ struct TestModelUIkit: View {
     // view 전환 및 api post
     func changeView() {
         // print("red: \(self.red) | green: \(self.green) | blue: \(self.blue)")
-        self.endPoint = 80
+        self.endPoint = endPoinValue
         withAnimation(.easeOut(duration: 0.7)) {
             isGIFViewVisible = true
         }
@@ -442,6 +461,9 @@ struct TestModelUIkit: View {
         self.blue = newBlue
 
         let newColor = UIColor(red: red, green: green, blue: blue, alpha: 1.0)
+        print("==== red-blue: \(red-blue)")
+        // print("=== UIColore: \(newColor)")
+
         return newColor
     }
 
