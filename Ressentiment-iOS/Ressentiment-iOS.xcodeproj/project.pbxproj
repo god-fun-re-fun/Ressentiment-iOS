@@ -259,7 +259,6 @@
 			packageReferences = (
 				0299FFBD2BC27D2B00D9F45B /* XCRemoteSwiftPackageReference "SnapKit" */,
 				0299FFC22BC4171900D9F45B /* XCRemoteSwiftPackageReference "CocoaMQTT" */,
-				024B17412BF3CC80009D6B04 /* XCRemoteSwiftPackageReference "Gifu" */,
 			);
 			productRefGroup = 021F2E0F2B95A8A500D13367 /* Products */;
 			projectDirPath = "";
@@ -527,14 +526,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		024B17412BF3CC80009D6B04 /* XCRemoteSwiftPackageReference "Gifu" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/kaishin/Gifu.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.6.1;
-			};
-		};
 		0299FFBD2BC27D2B00D9F45B /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit.git";

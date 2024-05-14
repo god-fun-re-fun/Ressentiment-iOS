@@ -104,77 +104,70 @@ struct TestModelUIkit: View {
     @State var redOnGreen: Bool = false
     @State var redOnGray: Bool = false
 
-    @StateObject var navigationStackManager = NavigationStackManager()
+    @Environment(\.presentationMode) var presentationMode
 
     var body: some View {
-        NavigationStack {
-            if navigationStackManager.isAtRootView {
-                StartView()
+        ZStack {
+            if isGIFViewVisible {
+                GIFViewRepresentable(particleColor: UIColor(red: self.red, green: self.green, blue: self.blue, alpha: 1.0))
+                    .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+                    .transition(.opacity)
+                    .animation(.easeOut(duration: 0.3))
+                    .onTapGesture {
+                        // 현재 뷰 닫기
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                    .onDisappear {
+                        stopMusic()
+                        timeStop()
+                    }
             } else {
-                ZStack {
-                    if isGIFViewVisible {
-                        GIFViewRepresentable(particleColor: UIColor(red: self.red, green: self.green, blue: self.blue, alpha: 1.0))
-                            .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
-                            .transition(.opacity)
-                            .animation(.easeOut(duration: 0.3))
-                            .onTapGesture {
-                                // 현재 뷰 닫기
-                                navigationStackManager.isAtRootView = true
-                            }
-                            .onDisappear {
-                                stopMusic()
-                                timeStop()
-                            }
-                    } else {
-                        SceneView(scene: crackScene, options: [.autoenablesDefaultLighting, .allowsCameraControl])
-                            .edgesIgnoringSafeArea(.all)
-                            .frame(width: UIScreen.main.bounds.width*2.5, height: UIScreen.main.bounds.height*2.5)
-                            .position(x: UIScreen.main.bounds.width/3, y: UIScreen.main.bounds.height/3)
-                            .onAppear {
-                                setupScene()
-                            }
-                            .onDisappear {
-                                stopMusic()
-                                timeStop()
-                            }
-                            .onReceive(mqttManager.$receivedMessage) { newValue in
-                                print("📢📢📢📢=== Here: \(newValue)")
-
-                                self.timer?.invalidate()
-                                self.timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
-                                    print("== no event 2 🫥 ==")
-                                    rotationAction(glassVector: SCNVector3(1, 0, 0), headVector: SCNVector3(-1, 0, 0))
-
-                                    changeAnimation(0.44, 0.44, 0.44)
-
-                                    self.endPoint -= 1
-
-                                    if endPoint <= 1 {
-                                        print("=== The End handleDragChange===")
-                                        changeView()
-                                    }
-                                }
-
-                                receivedMessage(receivedMessage: mqttManager.receivedMessage)
-                            }
-                            .gesture(
-                                DragGesture()
-                                    .onChanged { change in
-                                        handleDragChange(change: change)
-
-                                        print("==== 🔊 Duration: \(self.rotationDuration)")
-                                    }
-                            )
+                SceneView(scene: crackScene, options: [.autoenablesDefaultLighting, .allowsCameraControl])
+                    .edgesIgnoringSafeArea(.all)
+                    .frame(width: UIScreen.main.bounds.width*2.5, height: UIScreen.main.bounds.height*2.5)
+                    .position(x: UIScreen.main.bounds.width/3, y: UIScreen.main.bounds.height/3)
+                    .onAppear {
+                        setupScene()
                     }
-                    if isSceneViewVisible && !isGIFViewVisible {
-                        SceneViewRepresentable(scene: glassHead, allowsCameraControl: true)
-                            .frame(width: UIScreen.main.bounds.width / 4, height: UIScreen.main.bounds.height / 4)
+                    .onDisappear {
+                        stopMusic()
+                        timeStop()
                     }
-                }
-                .animation(.easeOut(duration: 0.3), value: isGIFViewVisible)
+                    .onReceive(mqttManager.$receivedMessage) { newValue in
+                        print("📢📢📢📢=== Here: \(newValue)")
+
+                        self.timer?.invalidate()
+                        self.timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
+                            print("== no event 2 🫥 ==")
+                            rotationAction(glassVector: SCNVector3(1, 0, 0), headVector: SCNVector3(-1, 0, 0))
+
+                            changeAnimation(0.44, 0.44, 0.44)
+
+                            self.endPoint -= 1
+
+                            if endPoint <= 1 {
+                                print("=== The End handleDragChange===")
+                                changeView()
+                            }
+                        }
+
+                        receivedMessage(receivedMessage: mqttManager.receivedMessage)
+                    }
+                    .gesture(
+                        DragGesture()
+                            .onChanged { change in
+                                handleDragChange(change: change)
+
+                                print("==== 🔊 Duration: \(self.rotationDuration)")
+                            }
+                    )
+            }
+            if isSceneViewVisible && !isGIFViewVisible {
+                SceneViewRepresentable(scene: glassHead, allowsCameraControl: true)
+                    .frame(width: UIScreen.main.bounds.width / 4, height: UIScreen.main.bounds.height / 4)
             }
         }
-        .environmentObject(navigationStackManager)
+        .animation(.easeOut(duration: 0.3), value: isGIFViewVisible)
         .navigationBarBackButtonHidden(true)
     }
 
