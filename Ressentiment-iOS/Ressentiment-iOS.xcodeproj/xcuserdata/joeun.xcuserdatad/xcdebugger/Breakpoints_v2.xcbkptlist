@@ -16,8 +16,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "447"
             endingLineNumber = "447"
-            landmarkName = "TestModelUIkit"
-            landmarkType = "14">
+            landmarkName = "changeColor(_:_:_:)"
+            landmarkType = "7">
             <Locations>
                <Location
                   uuid = "BEDE75B7-DFFE-4504-836A-1B533A72EF12 - a5e5d018cf8dc5ef"
@@ -96,8 +96,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "343"
             endingLineNumber = "343"
-            landmarkName = "TestModelUIkit"
-            landmarkType = "14">
+            landmarkName = "rightRotation()"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
