@@ -146,7 +146,7 @@ struct TestModelUIkit: View {
                             print("== no event 2 🫥 ==")
                             rotationAction(glassVector: SCNVector3(1, 0, 0), headVector: SCNVector3(-1, 0, 0))
 
-                            changeAnimation(0.44, 0.44, 0.44)
+                            changeAnimation(0.7, 0.7, 0.7)
 
                             self.endPoint -= 1
 
@@ -189,13 +189,13 @@ struct TestModelUIkit: View {
     // 초기 애니메이션 적용
     private func applyInitialAnimations() {
         // 초기 애니메이션 적용 로직
-        let rotationAction = SCNAction.rotate(by: .pi*15, around: SCNVector3(1, 0, 0), duration: self.rotationDuration)
-        let rotationAction2 = SCNAction.rotate(by: .pi*15, around: SCNVector3(-1, 0, 0), duration: self.rotationDuration/2+self.rotationDuration/3)
+        let rotationAction = SCNAction.rotate(by: .pi*15, around: SCNVector3(1, 0, 0), duration: 100)
+        let rotationAction2 = SCNAction.rotate(by: .pi*15, around: SCNVector3(-1, 0, 0), duration: 100/2+100/3)
         glassHead?.rootNode.removeAllActions()
         crackScene?.rootNode.removeAllActions()
         glassHead?.rootNode.runAction(rotationAction)
         crackScene?.rootNode.runAction(rotationAction2)
-        changeAnimation(0.44, 0.44, 0.44)
+        changeAnimation(0.7, 0.7, 0.7)
     }
 
     // MQTT 통신
@@ -234,7 +234,7 @@ struct TestModelUIkit: View {
             print("== no event 1 🫥 ==")
             rotationAction(glassVector: SCNVector3(1, 0, 0), headVector: SCNVector3(-1, 0, 0))
 
-            changeAnimation(0.44, 0.44, 0.44)
+            changeAnimation(0.7, 0.7, 0.7)
 
             self.endPoint -= Int(beta/self.rotationDuration)
 
@@ -325,7 +325,7 @@ struct TestModelUIkit: View {
 
         let averageColorValue = (self.red + self.green + self.blue) / 3
 
-        if (averageColorValue >= 0.61 && !self.redOnGray) {
+        if (averageColorValue >= 0.628 && !self.redOnGray) {
             self.redOnGray = true
         } else if (self.redOnGray && (self.red-self.blue) >= 0.15 ) {
             self.redOnGreen = false
@@ -371,9 +371,21 @@ struct TestModelUIkit: View {
     func leftRotation() {
         self.endPoint -= Int(beta/self.rotationDuration)
 
-        rotationAction(glassVector: SCNVector3(0, 1, 0), headVector: SCNVector3(0, -1, 0))
-        print("===== green ")
-        changeAnimation(0.24, 1, 0.24)
+        if (self.green >= 0.9 && !self.redOnGreen) {
+            self.redOnGreen = true
+        } else if (self.redOnBlue && (self.red-self.green) >= 0.4 ) {
+            self.redOnGreen = false
+        }
+
+        if (self.redOnGreen) {
+            // UIColor(red: 1, green: 0.24, blue: 0.24, alpha: 1)
+            print("🔴 red 🔴")
+            changeAnimation(1, 0.24, 0.24)
+        } else {
+            print("🟢 green 🟢")
+            changeAnimation(0.24, 1, 0.24)
+        }
+
         print("⬅️")
     }
 
