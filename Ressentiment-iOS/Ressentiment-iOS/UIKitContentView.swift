@@ -63,14 +63,16 @@ struct SceneViewRepresentable: UIViewControllerRepresentable {
 
 struct MainView: View {
     @State var rotationDuration: TimeInterval = 80.0
+    @ObservedObject var viewModel = SharedViewModel()
 
     var body: some View {
         VStack {
-            TestModelUIkit(rotationDuration: $rotationDuration)
+            TestModelUIkit(rotationDuration: $rotationDuration, viewModel: viewModel)
                 .edgesIgnoringSafeArea(.all)
                 .background(Color.black)
         }
     }
+
 }
 
 struct TestModelUIkit: View {
@@ -105,6 +107,7 @@ struct TestModelUIkit: View {
     @State var redOnGray: Bool = false
 
     @Environment(\.presentationMode) var presentationMode
+    @ObservedObject var viewModel = SharedViewModel()
 
     var body: some View {
         ZStack {
@@ -116,6 +119,8 @@ struct TestModelUIkit: View {
                     .onTapGesture {
                         // 현재 뷰 닫기
                         presentationMode.wrappedValue.dismiss()
+                        viewModel.mainOn = false
+                        viewModel.startOn = true
                     }
                     .onDisappear {
                         stopMusic()
@@ -168,7 +173,6 @@ struct TestModelUIkit: View {
             }
         }
         .animation(.easeOut(duration: 0.3), value: isGIFViewVisible)
-        .navigationBarBackButtonHidden(true)
     }
 
     // 모든 초기 설정을 처리하는 함수
