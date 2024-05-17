@@ -19,7 +19,7 @@ final class MQTTManager: ObservableObject {
     private func setupMQTT() {
         let clientID = "CocoaMQTT-" + String(ProcessInfo().processIdentifier)
 
-        mqtt = CocoaMQTT(clientID: clientID, host: "192.168.150.230", port: 8884)
+        mqtt = CocoaMQTT(clientID: clientID, host: "192.168.210.230", port: 8884)
         mqtt?.keepAlive = 60
         //        mqtt?.willMessage = CocoaMQTTMessage(topic: "topic", string: "==== Connected iOS")
         mqtt?.autoReconnect = true

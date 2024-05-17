@@ -96,8 +96,8 @@ struct TestModelUIkit: View {
 
     @ObservedObject var mqttManager = MQTTManager()
 
-    let endPoinValue = 90
-    @State var endPoint = 90
+    let endPoinValue = 92
+    @State var endPoint = 92
     @State var alphaa: CGFloat = 2
     @State var beta: CGFloat = 100
     @State var gamma: Int = 1
@@ -282,8 +282,8 @@ struct TestModelUIkit: View {
 
     // 위로 움직임
     func upRotation() {
-        if self.rotationDuration >= 80 {
-            self.rotationDuration = 80
+        if self.rotationDuration >= 75 {
+            self.rotationDuration = 75
         } else {
             self.rotationDuration += alphaa
         }
@@ -292,6 +292,7 @@ struct TestModelUIkit: View {
 
         rotationAction(glassVector: SCNVector3(-1, 0, 0), headVector: SCNVector3(1, 0, 0))
         print("===== blue ")
+
         if (self.blue >= 0.9 && !self.redOnBlue) {
             self.redOnBlue = true
         } 
@@ -325,7 +326,7 @@ struct TestModelUIkit: View {
 
         let averageColorValue = (self.red + self.green + self.blue) / 3
 
-        if (averageColorValue >= 0.628 && !self.redOnGray) {
+        if (averageColorValue >= 0.63 && !self.redOnGray) {
             self.redOnGray = true
         } else if (self.redOnGray && (self.red-self.blue) >= 0.15 ) {
             self.redOnGreen = false
@@ -371,6 +372,8 @@ struct TestModelUIkit: View {
     func leftRotation() {
         self.endPoint -= Int(beta/self.rotationDuration)
 
+        rotationAction(glassVector: SCNVector3(0, 1, 0), headVector: SCNVector3(0, -1, 0))
+
         if (self.green >= 0.9 && !self.redOnGreen) {
             self.redOnGreen = true
         } else if (self.redOnBlue && (self.red-self.green) >= 0.4 ) {
@@ -391,15 +394,55 @@ struct TestModelUIkit: View {
 
     // MARK: - 대각선 움직임
     func upLeftRotation() {
+        self.endPoint -= Int(beta/self.rotationDuration)
+
         rotationAction(glassVector: SCNVector3(-1, -1, 0), headVector: SCNVector3(1, 1, 0))
+
+        if (self.blue >= 0.9 && !self.redOnBlue) {
+            self.redOnBlue = true
+        }
+        else if (self.redOnBlue && (self.red-self.blue) >= 0.1 ) {
+            self.redOnBlue = false
+        }
+
+        if (self.redOnBlue) {
+            // UIColor(red: 1, green: 0.24, blue: 0.24, alpha: 1)
+            print("🔴 red 🔴")
+            changeAnimation(1, 0.24, 0.24)
+        } else {
+            print("🔵 blue 🔵")
+            changeAnimation(0.24, 0.47, 1)
+        }
     }
     func upRightRotation() {
+        self.endPoint -= Int(beta/self.rotationDuration)
+
         rotationAction(glassVector: SCNVector3(-1, 1, 0), headVector: SCNVector3(1, -1, 0))
+
+        if (self.blue >= 0.9 && !self.redOnBlue) {
+            self.redOnBlue = true
+        }
+        else if (self.redOnBlue && (self.red-self.blue) >= 0.1 ) {
+            self.redOnBlue = false
+        }
+
+        if (self.redOnBlue) {
+            // UIColor(red: 1, green: 0.24, blue: 0.24, alpha: 1)
+            print("🔴 red 🔴")
+            changeAnimation(1, 0.24, 0.24)
+        } else {
+            print("🔵 blue 🔵")
+            changeAnimation(0.24, 0.47, 1)
+        }
     }
     func downLeftRotation() {
+        self.endPoint -= Int(beta/self.rotationDuration)
+
         rotationAction(glassVector: SCNVector3(1, -1, 0), headVector: SCNVector3(-1, 1, 0))
     }
     func downRightRotation() {
+        self.endPoint -= Int(beta/self.rotationDuration)
+
         rotationAction(glassVector: SCNVector3(1, 1, 0), headVector: SCNVector3(-1, -1, 0))
     }
 
