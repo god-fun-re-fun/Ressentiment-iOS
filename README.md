@@ -5,7 +5,8 @@
 <br>
 
 ### 🤳 사용자 인터랙션 (iOS)
-
+![image](https://github.com/user-attachments/assets/89557eb7-4cdb-4b74-9d17-0ae2d1d53e3b)
+##### 🙌🏻 인터랙션 방법
 ![image](https://github.com/user-attachments/assets/2957c13f-0a2e-4ef0-8764-b32aff7f9b3c)
 | 회전하는 모습 | 구슬이 깨지는 장면 |
 |:--:|:--:|
