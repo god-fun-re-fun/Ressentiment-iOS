@@ -11,7 +11,7 @@
 | 회전하는 모습 | 구슬이 깨지는 장면 |
 |:--:|:--:|
 |![Simulator_Screen_Recording_-_iPad_Pro_(12 9-inch)_(4th_generation)_-_2024-06-07_at_14 33 41](https://github.com/user-attachments/assets/dee143bf-3c2b-43e2-b2f9-163230cb3fe2)|![Simulator_Screen_Recording_-_iPad_Pro_(12 9-inch)_(4th_generation)_-_2024-06-07_at_14 34 47](https://github.com/user-attachments/assets/dbafe6b0-f07c-49b1-ad9f-22fe1cb30f74)
-|
+
 
 ### 🌉 도시 모습 (Unity)
 
